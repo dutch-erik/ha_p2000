@@ -1,6 +1,6 @@
 {
   "domain": "p2000",
-  "name": "Integration HA-P2000",
+  "name": "P2000 sensor NL",
   "codeowners": ["@dutch-erik"],
   "config_flow": false,
   "documentation": "https://github.com/dutch-erik/ha-p2000",
