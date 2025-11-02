@@ -60,7 +60,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     # Voeg meldingfilter toe
     if CONF_MELDING in config:
-        api_filter[CONF_MELDING] = config[CONF_MELDING]
+        api_filter[CONF_MELDING] = config[CONF_MELDING][0]  # oude veilige methode
+#        api_filter[CONF_MELDING] = config[CONF_MELDING]
 
     api = P2000Api()
     async_add_entities([P2000Sensor(api, name, icon, api_filter)], True)
