@@ -1,6 +1,6 @@
 {
   "domain": "p2000",
-  "name": "P2000 Sensor",
+  "name": "Home Assistant - P2000 Events for The Netherlands",
   "documentation": "",
   "dependencies": [],
   "codeowners": ["@dutch-erik"],
