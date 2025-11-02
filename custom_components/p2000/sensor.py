@@ -1,12 +1,17 @@
-import logging
-import voluptuous as vol
-from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
-from homeassistant.const import (CONF_NAME, CONF_ICON)
-import homeassistant.helpers.config_validation as cv
-from .api import P2000Api
-from datetime import timedelta
+"""P2000 Sensor integration for Home Assistant."""
 
-"""Start the logger"""
+import logging
+import json
+import hashlib
+from datetime import timedelta
+import voluptuous as vol
+
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.const import CONF_NAME, CONF_ICON
+import homeassistant.helpers.config_validation as cv
+
+from .api import P2000Api
+
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = "p2000"
@@ -18,8 +23,9 @@ CONF_WOONPLAATSEN = "woonplaatsen"
 CONF_REGIOS = "regios"
 CONF_PRIO1 = "prio1"
 CONF_LIFE = "lifeliners"
-CONF_MELDING = "melding"  # Nieuwe configuratieoptie voor melding filter
-SCAN_INTERVAL = timedelta(minutes=2)  # Update elke 1 minuten
+CONF_MELDING = "melding"
+
+SCAN_INTERVAL = timedelta(minutes=1)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
@@ -31,54 +37,55 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_DIENSTEN): vol.All(cv.ensure_list, [cv.string]),
     vol.Optional(CONF_PRIO1, default=False): cv.boolean,
     vol.Optional(CONF_LIFE, default=False): cv.boolean,
-    vol.Optional(CONF_MELDING): vol.All(cv.ensure_list, [cv.string]),  # Validatie van de melding filter
+    vol.Optional(CONF_MELDING): vol.All(cv.ensure_list, [cv.string]),
 })
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Setup the sensor platform."""
 
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    """Set up the P2000 sensor platform."""
     name = config.get(CONF_NAME)
     icon = config.get(CONF_ICON)
 
-    apiFilter = {}
-        
-    # Voeg string / string array eigenschappen toe aan de apiFilter
+    api_filter = {}
+
+    # Voeg string- of lijstwaarden toe
     for prop in [CONF_WOONPLAATSEN, CONF_GEMEENTEN, CONF_CAPCODES, CONF_DIENSTEN, CONF_REGIOS]:
         if prop in config:
-            apiFilter[prop] = config[prop]
+            api_filter[prop] = config[prop]
 
-    # Voeg boolean eigenschappen toe aan de apiFilter
+    # Voeg booleans toe als string "1"
     for prop in [CONF_PRIO1, CONF_LIFE]:
-        if prop in config and config[prop] == True:
-            apiFilter[prop] = "1"
+        if config.get(prop, False):
+            api_filter[prop] = "1"
 
-    # Voeg de melding filter toe aan de apiFilter
+    # Voeg meldingfilter toe
     if CONF_MELDING in config:
-        apiFilter[CONF_MELDING] = config[CONF_MELDING][0]  # Neem de eerste melding als filter
+        api_filter[CONF_MELDING] = config[CONF_MELDING]
 
     api = P2000Api()
+    async_add_entities([P2000Sensor(api, name, icon, api_filter)], True)
 
-    add_entities([P2000Sensor(api, name, icon, apiFilter)])
 
 class P2000Sensor(SensorEntity):
-    """Representation of a Sensor."""
+    """Representation of a P2000 Sensor."""
 
-    def __init__(self, api, name, icon, apiFilter):
+    _attr_should_poll = True
+
+    def __init__(self, api, name, icon, api_filter):
         """Initialize the sensor."""
         self.api = api
-        self.attributes = {}
-        self.apiFilter = apiFilter
+        self._api_filter = api_filter
         self._name = name
-        self.icon = icon
+        self._icon = icon
         self._state = None
+        self._attributes = {}
 
-        # Gebruik een unieke ID gebaseerd op de naam en filteropties
-        self._unique_id = f"p2000_{name}_{'_'.join(apiFilter.keys())}"
+        # Maak een stabiel unique_id op basis van naam + filterinhoud
+        unique_str = name + json.dumps(api_filter, sort_keys=True)
+        unique_hash = hashlib.md5(unique_str.encode()).hexdigest()
+        self._attr_unique_id = f"p2000_{unique_hash}"
 
-    @property
-    def unique_id(self):
-        """Return a unique ID for this sensor."""
-        return self._unique_id
+        _LOGGER.debug("P2000 Sensor aangemaakt met unique_id: %s", self._attr_unique_id)
 
     @property
     def name(self):
@@ -86,26 +93,31 @@ class P2000Sensor(SensorEntity):
         return self._name
 
     @property
+    def icon(self):
+        """Return the icon for the sensor."""
+        return self._icon
+
+    @property
     def state(self):
-        """Return the state of the sensor."""
+        """Return the current state."""
         return self._state
 
     @property
     def extra_state_attributes(self):
-        """Return the state attributes of the monitored installation."""
-        attributes = self.attributes
-        attributes['icon'] = self.icon
+        """Return the state attributes."""
+        attributes = self._attributes.copy()
+        attributes["icon"] = self._icon
         return attributes
 
-    def update(self):
-        """Fetch new state data for the sensor.
+    async def async_update(self):
+        """Fetch new data from the API."""
+        data = await self.hass.async_add_executor_job(self.api.get_data, self._api_filter)
 
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        data = self.api.get_data(self.apiFilter)
-
-        if data is None:
+        if not data:
+            _LOGGER.debug("Geen data ontvangen van p2000 API voor sensor: %s", self._name)
             return
 
-        self.attributes = data
-        self._state = data["melding"]
+        self._attributes = data
+        self._state = data.get("melding")
+
+        _LOGGER.debug("Sensor %s bijgewerkt: %s", self._name, self._state)
