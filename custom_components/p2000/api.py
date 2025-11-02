@@ -6,7 +6,7 @@ from urllib3.util.retry import Retry
 
 _LOGGER = logging.getLogger(__name__)
 
-class p2000Api:
+class P2000Api:
     url = "https://beta.alarmeringdroid.nl/api2/find/"
 
     def __init__(self):
