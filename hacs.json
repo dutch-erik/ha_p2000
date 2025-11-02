@@ -1,0 +1,8 @@
+{
+  "name": "HA P2000",
+  "content_in_root": false,
+  "render_readme": true,
+  "domain": "p2000",
+  "country": ["NL"],
+  "homeassistant": "2024.1.0"
+}
