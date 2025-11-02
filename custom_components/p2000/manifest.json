@@ -3,7 +3,7 @@
   "name": "P2000 Sensor",
   "documentation": "",
   "dependencies": [],
-  "codeowners": ["@leeuwte"],
+  "codeowners": ["@dutch-erik"],
   "requirements": [],
   "version" : "0.0.1"
 }
