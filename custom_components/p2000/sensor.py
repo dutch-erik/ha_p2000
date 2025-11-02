@@ -73,7 +73,7 @@ class P2000Sensor(SensorEntity):
         self._state = None
 
         # Gebruik een unieke ID gebaseerd op de naam en filteropties
-        self._unique_id = f"p3000_{name}_{'_'.join(apiFilter.keys())}"
+        self._unique_id = f"p2000_{name}_{'_'.join(apiFilter.keys())}"
 
     @property
     def unique_id(self):
