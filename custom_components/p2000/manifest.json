@@ -1,10 +1,11 @@
 {
   "domain": "p2000",
   "name": "P2000 Sensor",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "documentation": "https://github.com/jouwgebruikersnaam/ha-p2000",
   "issue_tracker": "https://github.com/jouwgebruikersnaam/ha-p2000/issues",
   "codeowners": ["@dutch-erik"],
   "iot_class": "cloud_polling",
+  "config_flow": true,
   "requirements": []
 }
