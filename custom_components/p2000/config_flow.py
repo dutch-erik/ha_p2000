@@ -51,6 +51,7 @@ class P2000ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=name, data=user_input)
 
         return self.async_show_form(step_id="user", data_schema=FORM_SCHEMA, errors=errors)
+
 from .options_flow import P2000OptionsFlowHandler
 
 @config_entries.HANDLERS.register(DOMAIN)
