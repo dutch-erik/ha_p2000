@@ -9,6 +9,46 @@ Een Home Assistant integratie om P2000 meldingen uit [AlarmeringDroid](https://b
 2. Installeer de integratie "HA P2000".
 3. Voeg een sensor toe in `configuration.yaml`:
 
+
+## Regios (Veiligheidsregios)
+
+```yaml
+1: Amsterdam-Amstelland
+2: Groningen
+3: Noord- en Oost Gelderland
+4: Zaanstreek-Waterland
+5: Hollands Midden
+6: Brabant Noord
+7: Friesland
+8: Gelderland-Midden
+9: Kennemerland
+10: Rotterdam-Rijnmond
+11: Brabant Zuid-Oost
+12: Drenthe
+13: Gelderland-Zuid
+14: Zuid-Holland Zuid
+15: Limburg-Noord
+17: IJsselland
+18: Utrecht
+19: Gooi en Vechtstreek
+20: Zeeland
+21: Limburg-Zuid
+23: Twente
+24: Noord-Holland Noord
+25: Haaglanden
+26: Midden- en West Brabant
+27: Flevoland
+```
+## Diensten
+```yaml
+1: Politie
+2: Brandweer
+3: Ambulance
+4: KNRM
+5: Lifeliner
+7: DARES
+```
+## Voorbeelden
 ```yaml
 sensor:
   - platform: p2000
