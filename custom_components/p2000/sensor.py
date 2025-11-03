@@ -61,7 +61,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     api = P2000Api()
     coordinator = P2000DataUpdateCoordinator(hass, api, api_filter, SCAN_INTERVAL)
-    await coordinator.async_config_entry_first_refresh()
+    await coordinator.async_refresh()
     async_add_entities([P2000Sensor(coordinator, name, icon, api_filter)], True)
 
 
@@ -88,7 +88,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     api = P2000Api()
     coordinator = P2000DataUpdateCoordinator(hass, api, api_filter, SCAN_INTERVAL)
-    await coordinator.async_config_entry_first_refresh()
+    await coordinator.async_refresh()
     async_add_entities([P2000Sensor(coordinator, name, icon, api_filter)], True)
 
 
