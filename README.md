@@ -1,16 +1,15 @@
 # HA P2000
 
-Een Home Assistant integratie om P2000 meldingen uit [AlarmeringDroid](https://beta.alarmeringdroid.nl/) te tonen.
+A Home Assistant integration to display P2000 notifications from [AlarmeringDroid](https://beta.alarmeringdroid.nl/).
 
-## Installatie via HACS
+## Installation via HACS
 
-1. Voeg deze repo toe aan HACS als aangepaste opslagplaats:  
+1. Add this repository to HACS as a custom repository:  
    `https://github.com/dutch-erik/ha-p2000`
-2. Installeer de integratie "HA P2000".
-3. Voeg een sensor toe in `configuration.yaml`:
+2. Install the integration "HA P2000".
+3. Add a sensor in `configuration.yaml`:
 
-
-## Regios (Veiligheidsregios)
+## Regios NL (Veiligheidsregios)
 
 ```yaml
 1: Amsterdam-Amstelland
@@ -46,24 +45,15 @@ Een Home Assistant integratie om P2000 meldingen uit [AlarmeringDroid](https://b
 3: Ambulance
 4: KNRM
 5: Lifeliner
-7: DARES
+7: DARES (Dutch Amateur Radio Emergency Service)
 ```
-## Voorbeelden
+## Adding sensors
+
+- Temporary/manual (via configuration.yaml﻿)
+You can add sensors in your configuration.yaml﻿ like this for quick testing or control:
+
 ```yaml
 sensor:
-  - platform: p2000
-    name: p2000_mss
-    gemeenten:
-      - maassluis
-
-  - platform: p2000
-    name: p2000_llrsmss
-    icon: mdi:helicopter
-    gemeenten:
-      - maassluis
-    diensten:
-      - 5
-
   - platform: p2000
     name: p2000_haaglanden_mss
     regios:
@@ -71,6 +61,11 @@ sensor:
     melding:
       - 'MAASSL'
 ```
+After saving, restart Home Assistant or reload core config for sensors to appear.
+
+- Permanent/dynamic (via UI)
+After installation, go to Settings → Integrations, find "HA P2000" and configure sensors through the UI. This avoids the need for restarts and is preferred for ongoing use.
+
 ---
 MIT License
 
