@@ -7,8 +7,27 @@ A Home Assistant integration to display P2000 notifications from [AlarmeringDroi
 1. Add this repository to HACS as a custom repository:  
    `https://github.com/dutch-erik/ha-p2000`
 2. Install the integration "HA P2000".
-3. Add a sensor in `configuration.yaml`:
 
+## Adding sensors
+
+- Temporary/manual (via configuration.yaml﻿)
+You can add sensors in your configuration.yaml﻿ like this for quick testing or control:
+
+```yaml
+sensor:
+  - platform: p2000
+    name: p2000_haaglanden_mss
+    regios:
+      - 25
+    diensten:
+      - 2
+    melding:
+      - 'MAASSL'
+```
+After saving, restart Home Assistant or reload core config for sensors to appear.
+
+- Permanent/dynamic (via UI)
+After installation, go to Settings → Integrations, find "HA P2000" and configure sensors through the UI. This avoids the need for restarts and is preferred for ongoing use.
 ## Regios NL (Veiligheidsregios)
 
 ```yaml
@@ -47,24 +66,7 @@ A Home Assistant integration to display P2000 notifications from [AlarmeringDroi
 5: Lifeliner
 7: DARES (Dutch Amateur Radio Emergency Service)
 ```
-## Adding sensors
 
-- Temporary/manual (via configuration.yaml﻿)
-You can add sensors in your configuration.yaml﻿ like this for quick testing or control:
-
-```yaml
-sensor:
-  - platform: p2000
-    name: p2000_haaglanden_mss
-    regios:
-      - 25
-    melding:
-      - 'MAASSL'
-```
-After saving, restart Home Assistant or reload core config for sensors to appear.
-
-- Permanent/dynamic (via UI)
-After installation, go to Settings → Integrations, find "HA P2000" and configure sensors through the UI. This avoids the need for restarts and is preferred for ongoing use.
 
 ---
 MIT License
