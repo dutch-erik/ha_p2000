@@ -43,7 +43,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Legacy YAML-setup."""
+    """Legacy YAML setup."""
     name = config.get(CONF_NAME)
     icon = config.get(CONF_ICON)
     api_filter = {}
@@ -57,7 +57,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             api_filter[prop] = "1"
 
     if CONF_MELDING in config:
-        api_filter[CONF_MELDING] = config[CONF_MELDING][0]
+        value = config[CONF_MELDING]
+        if isinstance(value, list):
+            api_filter[CONF_MELDING] = value[0]
+        else:
+            api_filter[CONF_MELDING] = value
 
     api = P2000Api()
     coordinator = P2000DataUpdateCoordinator(hass, api, api_filter, SCAN_INTERVAL)
@@ -81,10 +85,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
         if conf.get(prop, False):
             api_filter[prop] = "1"
 
-    if CONF_MELDING in conf and conf[CONF_MELDING]:
-        melding_values = conf[CONF_MELDING]
-        if isinstance(melding_values, list):
-            api_filter[CONF_MELDING] = melding_values[0]
+    if CONF_MELDING in conf:
+        value = conf[CONF_MELDING]
+        if isinstance(value, list):
+            api_filter[CONF_MELDING] = value[0]
+        else:
+            api_filter[CONF_MELDING] = value
 
     api = P2000Api()
     coordinator = P2000DataUpdateCoordinator(hass, api, api_filter, SCAN_INTERVAL)
@@ -102,8 +108,6 @@ class P2000Sensor(SensorEntity):
         self._name = name
         self._icon = icon
         self._api_filter = api_filter
-        self._state = None
-        self._attributes = {}
         unique_str = name + json.dumps(api_filter, sort_keys=True, ensure_ascii=False)
         unique_hash = hashlib.md5(unique_str.encode()).hexdigest()
         self._attr_unique_id = f"p2000_{unique_hash}"
@@ -121,7 +125,9 @@ class P2000Sensor(SensorEntity):
     @property
     def state(self):
         data = self.coordinator.data
-        return data.get("melding") if data else None
+        if data is None:
+            return None
+        return data.get("melding")
 
     @property
     def available(self):
@@ -129,7 +135,11 @@ class P2000Sensor(SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        data = self.coordinator.data or {}
-        attributes = data.copy()
+        data = self.coordinator.data
+        attributes = {}
+        if data:
+            attributes = data.copy()
+        else:
+            attributes["status"] = "Nog geen meldingen"
         attributes["icon"] = self._icon
         return attributes
