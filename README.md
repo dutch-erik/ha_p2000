@@ -10,7 +10,7 @@ A Home Assistant integration to display P2000 notifications from [AlarmeringDroi
 
 ## Adding sensors
 
-- Temporary/manual (via configuration.yaml﻿)
+### - Temporary/manual (via configuration.yaml﻿)
 You can add sensors in your configuration.yaml﻿ like this for quick testing or control:
 
 ```yaml
@@ -26,8 +26,9 @@ sensor:
 ```
 After saving, restart Home Assistant or reload core config for sensors to appear.
 
-- Permanent/dynamic (via UI)
+### - Permanent/dynamic (via UI)  <-- NOT WORKING YET!!
 After installation, go to Settings → Integrations, find "HA P2000" and configure sensors through the UI. This avoids the need for restarts and is preferred for ongoing use.
+
 ## Regios NL (Veiligheidsregios)
 
 ```yaml
@@ -66,27 +67,5 @@ After installation, go to Settings → Integrations, find "HA P2000" and configu
 5: Lifeliner
 7: DARES (Dutch Amateur Radio Emergency Service)
 ```
-
-
----
-MIT License
-
-Copyright (c) 2025 [dutch-erik]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  
+  
