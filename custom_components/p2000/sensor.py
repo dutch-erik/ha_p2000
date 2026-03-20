@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.restore_state import RestoreEntity
 
 from .api import P2000Api
@@ -131,13 +132,13 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         self._attr_name = f"P2000 {name}"
 
     @property
-    def device_info(self) -> dict[str, Any]:
-        return {
-            "identifiers": {("p2000", "p2000_device")},
-            "name": "P2000 Meldingen",
-            "manufacturer": "P2000 Nederland",
-            "model": "P2000 Live Alerts",
-        }
+    def device_info(self) -> DeviceInfo:
+        return DeviceInfo(
+            identifiers={("p2000", "p2000_device")},
+            name="P2000 Meldingen",
+            manufacturer="P2000 Nederland",
+            model="P2000 Live Alerts",
+        )
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
