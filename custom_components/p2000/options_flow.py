@@ -6,7 +6,7 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.config_entries import OptionsFlowResult
+from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.helpers import selector
 from homeassistant.helpers.selector import SelectSelectorConfig
 
@@ -30,12 +30,12 @@ class P2000OptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
-    ) -> OptionsFlowResult:
+    ) -> ConfigFlowResult:
         return await self.async_step_options()
 
     async def async_step_options(
         self, user_input: dict[str, Any] | None = None
-    ) -> OptionsFlowResult:
+    ) -> ConfigFlowResult:
         current = {**self.entry.data, **self.entry.options}
 
         # Convert stored lists back to comma-separated strings for the text fields.
