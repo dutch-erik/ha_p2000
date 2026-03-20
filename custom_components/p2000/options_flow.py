@@ -6,18 +6,18 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers import selector
 
+from .config_flow import _normalize_user_input
 from .const import (
-    CONF_GEMEENTEN,
     CONF_CAPCODES,
-    CONF_REGIOS,
     CONF_DIENSTEN,
-    CONF_PRIO1,
+    CONF_GEMEENTEN,
     CONF_LIFE,
     CONF_MELDING,
-    REGIO_OPTIES,
+    CONF_PRIO1,
+    CONF_REGIOS,
     DIENST_OPTIES,
+    REGIO_OPTIES,
 )
-from .config_flow import _normalize_user_input
 
 
 class P2000OptionsFlowHandler(config_entries.OptionsFlow):
