@@ -1,1 +1,60 @@
+name: CI
 
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint-and-type-check:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run ruff (linter)
+        run: ruff check custom_components/p2000/
+
+      - name: Run ruff (formatter check)
+        run: ruff format --check custom_components/p2000/
+
+      - name: Run mypy (type checker)
+        run: mypy custom_components/p2000/
+
+  validate-manifest:
+    name: Validate manifest.json
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check manifest.json is valid JSON
+        run: python3 -c "import json, sys; json.load(open('custom_components/p2000/manifest.json')); print('manifest.json OK')"
+
+      - name: Check required manifest fields
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          m = json.load(open("custom_components/p2000/manifest.json"))
+          required = ["domain", "name", "version", "config_flow", "iot_class"]
+          missing = [f for f in required if f not in m]
+          if missing:
+              print(f"Missing fields: {missing}")
+              sys.exit(1)
+          print(f"All required fields present. Version: {m['version']}")
+          EOF
