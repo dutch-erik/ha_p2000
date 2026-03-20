@@ -2,7 +2,7 @@
 
 import logging
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -44,7 +44,7 @@ class P2000DataUpdateCoordinator(DataUpdateCoordinator):
             return self.last_valid_data
 
         self.last_valid_data = data
-        self.last_update_success_time = datetime.now(timezone.utc)
+        self.last_update_success_time = datetime.now(UTC)
         _LOGGER.debug(
             "P2000: Updated data in %.2fs: %s",
             duration,
