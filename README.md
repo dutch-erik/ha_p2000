@@ -1,7 +1,7 @@
 # HA P2000
 
 [![GitHub Release](https://img.shields.io/github/v/release/dutch-erik/ha_p2000)](https://github.com/dutch-erik/ha_p2000/releases)
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A Home Assistant integration to display live P2000 emergency alerts from [AlarmeringDroid](https://beta.alarmeringdroid.nl/).
@@ -27,10 +27,9 @@ P2000 is the Dutch paging network used by emergency services (ambulance, fire br
 ### Via HACS (recommended)
 
 1. Open HACS in Home Assistant
-2. Go to **Integrations → ⋮ → Custom repositories**
-3. Add `https://github.com/dutch-erik/ha_p2000` as type **Integration**
-4. Search for **HA P2000** and click **Download**
-5. Restart Home Assistant
+2. Search for **HA P2000**
+3. Click **Download**
+4. Restart Home Assistant
 
 ### Manual
 
