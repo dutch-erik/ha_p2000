@@ -7,10 +7,10 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant.config_entries import ConfigFlowResult
+from homeassistant.core import callback
 from homeassistant.helpers import selector
-from homeassistant.helpers.selector import SelectOptionDict
+from homeassistant.helpers.selector import SelectOptionDict, SelectSelectorConfig
 
 from .const import (
     CONF_CAPCODES,
@@ -29,24 +29,23 @@ from .util import normalize_filter, stable_hash
 
 _LOGGER = logging.getLogger(__name__)
 
-REGIO_OPTIONS: list[SelectOptionDict] = [SelectOptionDict(**o) for o in REGIO_OPTIES]
-DIENST_OPTIONS: list[SelectOptionDict] = [SelectOptionDict(**o) for o in DIENST_OPTIES]
+# Convert raw dicts to typed SelectOptionDict objects once at module level.
+REGIO_OPTIONS: list[SelectOptionDict] = [
+    SelectOptionDict(value=o["value"], label=o["label"]) for o in REGIO_OPTIES
+]
+DIENST_OPTIONS: list[SelectOptionDict] = [
+    SelectOptionDict(value=o["value"], label=o["label"]) for o in DIENST_OPTIES
+]
 
 FORM_SCHEMA = vol.Schema({
     vol.Required(CONF_NAME): str,
     vol.Optional(CONF_GEMEENTEN): selector.TextSelector(),
     vol.Optional(CONF_CAPCODES): selector.TextSelector(),
     vol.Optional(CONF_REGIOS): selector.SelectSelector(
-        selector.SelectSelectorConfig(
-            options=REGIO_OPTIONS,
-            multiple=True,
-        )
+        SelectSelectorConfig(options=REGIO_OPTIONS, multiple=True)
     ),
     vol.Optional(CONF_DIENSTEN): selector.SelectSelector(
-        selector.SelectSelectorConfig(
-            options=DIENST_OPTIONS,
-            multiple=True,
-        )
+        SelectSelectorConfig(options=DIENST_OPTIONS, multiple=True)
     ),
     # Comma-separated keywords; ALL must match (AND logic).
     vol.Optional(CONF_MELDING): selector.TextSelector(),
@@ -67,14 +66,14 @@ class P2000ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_intro(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         if user_input is not None:
             return await self.async_step_user()
         return self.async_show_form(step_id="intro", description_placeholders={})
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         errors: dict[str, str] = {}
         if user_input is not None:
             user_input = _normalize_user_input(user_input)
