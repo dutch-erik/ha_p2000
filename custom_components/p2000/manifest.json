@@ -1,7 +1,7 @@
 {
   "domain": "p2000",
   "name": "P2000 Sensor",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "documentation": "https://github.com/dutch-erik/ha-p2000",
   "issue_tracker": "https://github.com/dutch-erik/ha-p2000/issues",
   "config_flow": true,
