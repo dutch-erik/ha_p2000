@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 
-from .config_flow import _normalize_user_input
+from .config_flow import DIENST_OPTIONS, REGIO_OPTIONS, _normalize_user_input
 from .const import (
     CONF_CAPCODES,
     CONF_DIENSTEN,
@@ -15,21 +18,23 @@ from .const import (
     CONF_MELDING,
     CONF_PRIO1,
     CONF_REGIOS,
-    DIENST_OPTIES,
-    REGIO_OPTIES,
 )
 
 
 class P2000OptionsFlowHandler(config_entries.OptionsFlow):
     """Options flow for P2000 (v2.1.5)."""
 
-    def __init__(self, entry):
+    def __init__(self, entry: config_entries.ConfigEntry) -> None:
         self.entry = entry
 
-    async def async_step_init(self, user_input=None):
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         return await self.async_step_options()
 
-    async def async_step_options(self, user_input=None):
+    async def async_step_options(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         current = {**self.entry.data, **self.entry.options}
 
         # Convert stored lists back to comma-separated strings for the text fields.
@@ -46,11 +51,11 @@ class P2000OptionsFlowHandler(config_entries.OptionsFlow):
                 selector.TextSelector(),
             vol.Optional(CONF_REGIOS, default=current.get(CONF_REGIOS, [])):
                 selector.SelectSelector(
-                    selector.SelectSelectorConfig(options=REGIO_OPTIES, multiple=True)
+                    selector.SelectSelectorConfig(options=REGIO_OPTIONS, multiple=True)
                 ),
             vol.Optional(CONF_DIENSTEN, default=current.get(CONF_DIENSTEN, [])):
                 selector.SelectSelector(
-                    selector.SelectSelectorConfig(options=DIENST_OPTIES, multiple=True)
+                    selector.SelectSelectorConfig(options=DIENST_OPTIONS, multiple=True)
                 ),
             # Comma-separated keywords; ALL must match (AND logic).
             vol.Optional(CONF_MELDING, default=_to_str(CONF_MELDING)):
