@@ -26,7 +26,10 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements-dev.txt
 
-      - name: Run ruff (linter)
+      - name: Run ruff (auto-fix)
+        run: ruff check --fix custom_components/p2000/
+
+      - name: Run ruff (check no unfixable errors remain)
         run: ruff check custom_components/p2000/
 
       - name: Run ruff (formatter check)
