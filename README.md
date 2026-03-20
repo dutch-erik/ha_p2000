@@ -13,7 +13,7 @@ P2000 is the Dutch paging network used by emergency services (ambulance, fire br
 ## Features
 
 - Live P2000 alerts as Home Assistant sensors
-- Filter by region (Veiligheidsregio), municipality, capcode, service type, and keyword
+- Filter by region (Veiligheidsregio), municipality (Gemeenten), capcode, service type (Diensten), and keyword
 - Multiple keyword filtering with AND logic (all keywords must match)
 - Automatic icon based on service type (ambulance, fire truck, helicopter, etc.)
 - Sensor state restored after HA restart
