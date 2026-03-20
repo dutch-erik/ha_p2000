@@ -6,8 +6,9 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant.config_entries import OptionsFlowResult
 from homeassistant.helpers import selector
+from homeassistant.helpers.selector import SelectSelectorConfig
 
 from .config_flow import DIENST_OPTIONS, REGIO_OPTIONS, _normalize_user_input
 from .const import (
@@ -29,12 +30,12 @@ class P2000OptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> OptionsFlowResult:
         return await self.async_step_options()
 
     async def async_step_options(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> OptionsFlowResult:
         current = {**self.entry.data, **self.entry.options}
 
         # Convert stored lists back to comma-separated strings for the text fields.
@@ -51,11 +52,11 @@ class P2000OptionsFlowHandler(config_entries.OptionsFlow):
                 selector.TextSelector(),
             vol.Optional(CONF_REGIOS, default=current.get(CONF_REGIOS, [])):
                 selector.SelectSelector(
-                    selector.SelectSelectorConfig(options=REGIO_OPTIONS, multiple=True)
+                    SelectSelectorConfig(options=REGIO_OPTIONS, multiple=True)
                 ),
             vol.Optional(CONF_DIENSTEN, default=current.get(CONF_DIENSTEN, [])):
                 selector.SelectSelector(
-                    selector.SelectSelectorConfig(options=DIENST_OPTIONS, multiple=True)
+                    SelectSelectorConfig(options=DIENST_OPTIONS, multiple=True)
                 ),
             # Comma-separated keywords; ALL must match (AND logic).
             vol.Optional(CONF_MELDING, default=_to_str(CONF_MELDING)):
