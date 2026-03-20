@@ -4,6 +4,7 @@ import hashlib
 import json
 import logging
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -54,7 +55,9 @@ def detect_service_from_text(text: str | None) -> str | None:
     return None
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: Any, entry: Any, async_add_entities: Any
+) -> None:
     conf = entry.data
     name = conf.get(CONF_NAME)
 
@@ -87,7 +90,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class P2000Sensor(SensorEntity, RestoreEntity):
     _attr_should_poll = False
 
-    def __init__(self, hass, coordinator, name, api_filter, entry_id):
+    def __init__(
+        self,
+        hass: Any,
+        coordinator: Any,
+        name: str,
+        api_filter: dict[str, Any],
+        entry_id: str,
+    ) -> None:
         self.hass = hass
         self.coordinator = coordinator
         self._name = name
@@ -121,7 +131,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         self._attr_name = f"P2000 {name}"
 
     @property
-    def device_info(self):
+    def device_info(self) -> dict[str, Any]:
         return {
             "identifiers": {("p2000", "p2000_device")},
             "name": "P2000 Meldingen",
@@ -129,7 +139,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
             "model": "P2000 Live Alerts",
         }
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
 
         # Restore previous state so the sensor isn't blank on HA restart.
@@ -219,7 +229,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
     # ------------------------------------------------------------------
 
     @property
-    def state(self) -> str | None:
+    def native_value(self) -> str | None:
         return self._cached_state
 
     @property
