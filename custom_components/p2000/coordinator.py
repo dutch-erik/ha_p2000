@@ -3,6 +3,7 @@
 import logging
 import time
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -12,10 +13,16 @@ _LOGGER = logging.getLogger(__name__)
 class P2000DataUpdateCoordinator(DataUpdateCoordinator):
     """Coordinator for fetching P2000 data periodically (v2.1.5)."""
 
-    def __init__(self, hass, api, api_filter, update_interval: timedelta):
+    def __init__(
+        self,
+        hass: Any,
+        api: Any,
+        api_filter: dict[str, Any],
+        update_interval: timedelta,
+    ) -> None:
         self.api = api
         self.api_filter = api_filter
-        self.last_valid_data = None
+        self.last_valid_data: dict[str, Any] | None = None
         self.last_update_success_time: datetime | None = None
 
         super().__init__(
@@ -25,7 +32,7 @@ class P2000DataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=update_interval,
         )
 
-    async def _async_update_data(self):
+    async def _async_update_data(self) -> dict[str, Any] | None:
         start = time.time()
         try:
             data = await self.hass.async_add_executor_job(self.api.get_data, self.api_filter)
