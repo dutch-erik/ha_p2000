@@ -19,8 +19,9 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["custom_components.p2000"]
-force-sort-within-sections = true
+known-first-party = ["custom_components"]
+known-third-party = ["homeassistant", "voluptuous", "requests", "urllib3"]
+split-on-trailing-comma = true
 
 [tool.ruff.format]
 quote-style = "double"
