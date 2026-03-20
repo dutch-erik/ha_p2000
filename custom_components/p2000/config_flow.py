@@ -11,19 +11,19 @@ from homeassistant.core import callback
 from homeassistant.helpers import selector
 
 from .const import (
-    DOMAIN,
-    CONF_NAME,
-    CONF_GEMEENTEN,
     CONF_CAPCODES,
-    CONF_REGIOS,
     CONF_DIENSTEN,
-    CONF_PRIO1,
+    CONF_GEMEENTEN,
     CONF_LIFE,
     CONF_MELDING,
-    REGIO_OPTIES,
+    CONF_NAME,
+    CONF_PRIO1,
+    CONF_REGIOS,
     DIENST_OPTIES,
+    DOMAIN,
+    REGIO_OPTIES,
 )
-from .util import stable_hash, normalize_filter
+from .util import normalize_filter, stable_hash
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ class P2000ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(entry):
-        from .options_flow import P2000OptionsFlowHandler
+        from .options_flow import P2000OptionsFlowHandler  # noqa: PLC0415
         return P2000OptionsFlowHandler(entry)
 
 
@@ -100,9 +100,8 @@ def _normalize_user_input(user_input: dict) -> dict:
         if not isinstance(v, str):
             continue
         parts = [i.strip() for i in v.split(",") if i.strip()]
-        if key == CONF_GEMEENTEN:
-            parts = [p.lower() for p in parts]
-        elif key == CONF_MELDING:
+        # Both gemeenten and melding are lowercased.
+        if key in (CONF_GEMEENTEN, CONF_MELDING):
             parts = [p.lower() for p in parts]
         result[key] = parts
     return result
