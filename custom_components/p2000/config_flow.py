@@ -7,8 +7,10 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
+from homeassistant.helpers.selector import SelectOptionDict
 
 from .const import (
     CONF_CAPCODES,
@@ -27,19 +29,22 @@ from .util import normalize_filter, stable_hash
 
 _LOGGER = logging.getLogger(__name__)
 
+REGIO_OPTIONS: list[SelectOptionDict] = [SelectOptionDict(**o) for o in REGIO_OPTIES]
+DIENST_OPTIONS: list[SelectOptionDict] = [SelectOptionDict(**o) for o in DIENST_OPTIES]
+
 FORM_SCHEMA = vol.Schema({
     vol.Required(CONF_NAME): str,
     vol.Optional(CONF_GEMEENTEN): selector.TextSelector(),
     vol.Optional(CONF_CAPCODES): selector.TextSelector(),
     vol.Optional(CONF_REGIOS): selector.SelectSelector(
         selector.SelectSelectorConfig(
-            options=REGIO_OPTIES,
+            options=REGIO_OPTIONS,
             multiple=True,
         )
     ),
     vol.Optional(CONF_DIENSTEN): selector.SelectSelector(
         selector.SelectSelectorConfig(
-            options=DIENST_OPTIES,
+            options=DIENST_OPTIONS,
             multiple=True,
         )
     ),
@@ -60,13 +65,17 @@ class P2000ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         normalized = normalize_filter(data)
         return stable_hash(normalized)
 
-    async def async_step_intro(self, user_input=None):
+    async def async_step_intro(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         if user_input is not None:
             return await self.async_step_user()
         return self.async_show_form(step_id="intro", description_placeholders={})
 
-    async def async_step_user(self, user_input=None):
-        errors = {}
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        errors: dict[str, str] = {}
         if user_input is not None:
             user_input = _normalize_user_input(user_input)
 
@@ -81,12 +90,15 @@ class P2000ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     @callback
-    def async_get_options_flow(entry):
+    def async_get_options_flow(
+        entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
         from .options_flow import P2000OptionsFlowHandler  # noqa: PLC0415
+
         return P2000OptionsFlowHandler(entry)
 
 
-def _normalize_user_input(user_input: dict) -> dict:
+def _normalize_user_input(user_input: dict[str, Any]) -> dict[str, Any]:
     """
     Normalize text fields from the UI form into canonical list types.
 
