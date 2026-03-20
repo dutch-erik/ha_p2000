@@ -41,7 +41,7 @@ def normalize_filter(data: dict) -> dict:
                 arr = [str(x).strip().lower() for x in v if x not in (None, "")]
             else:
                 arr = [str(v).strip().lower()]
-            out[k] = sorted({a for a in arr})
+            out[k] = sorted(set(arr))
             continue
         if isinstance(v, str):
             out[k] = v.strip()
