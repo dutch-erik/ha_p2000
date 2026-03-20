@@ -2,6 +2,7 @@
 
 import json
 import logging
+from typing import Any
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -16,7 +17,7 @@ class P2000Api:
     # Note: the remote API expects JSON appended to the URL path.
     url = "https://beta.alarmeringdroid.nl/api2/find/"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.session = requests.Session()
         retries = Retry(
             total=2,
@@ -26,7 +27,7 @@ class P2000Api:
         )
         self.session.mount("https://", HTTPAdapter(max_retries=retries))
 
-    def _request(self, api_filter: dict) -> dict | None:
+    def _request(self, api_filter: dict[str, Any]) -> dict[str, Any] | None:
         try:
             payload = json.dumps(api_filter, ensure_ascii=False)
         except (TypeError, ValueError) as err:
@@ -42,7 +43,8 @@ class P2000Api:
             response.raise_for_status()
             if _LOGGER.isEnabledFor(logging.DEBUG):
                 _LOGGER.debug("P2000 API response (truncated): %s", response.text[:1000])
-            return response.json()
+            result: dict[str, Any] = response.json()
+            return result
         except requests.exceptions.RequestException as err:
             _LOGGER.error("P2000: Error fetching API: %s", err)
             return None
@@ -50,7 +52,7 @@ class P2000Api:
             _LOGGER.error("P2000: Error parsing API JSON: %s", err)
             return None
 
-    def get_data(self, api_filter: dict) -> dict | None:
+    def get_data(self, api_filter: dict[str, Any]) -> dict[str, Any] | None:
         """
         Fetch data and apply optional keyword filter.
 
@@ -92,7 +94,7 @@ class P2000Api:
             return None
 
         # Return the first matching melding; normalise location keys.
-        result = meldingen[0]
+        result: dict[str, Any] = meldingen[0]
         result["latitude"] = result.pop("lat", None)
         result["longitude"] = result.pop("lon", None)
         return result
