@@ -42,7 +42,7 @@ P2000 is the Dutch paging network used by emergency services (ambulance, fire br
 
 ## Adding sensors
 
-### Via the UI (recommended)
+### Via the UI
 
 1. Go to **Settings → Integrations**
 2. Click **+ Add integration** and search for **P2000**
@@ -50,24 +50,6 @@ P2000 is the Dutch paging network used by emergency services (ambulance, fire br
 4. Click **Submit** — the sensor appears immediately without a restart
 
 To change filters later, click **Configure** on the integration card.
-
-### Via configuration.yaml (legacy)
-
-> ⚠️ YAML configuration is supported for quick testing but the UI flow is preferred for permanent sensors.
-
-```yaml
-sensor:
-  - platform: p2000
-    name: p2000_maassluis
-    gemeenten:
-      - maassluis
-    diensten:
-      - 3
-    melding:
-      - MAASSL
-```
-
-After saving, restart Home Assistant or reload the core config.
 
 ---
 
