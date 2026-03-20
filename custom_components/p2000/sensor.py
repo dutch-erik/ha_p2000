@@ -1,25 +1,24 @@
 """P2000 sensor (v2.1.5) — all bug fixes applied."""
 
-import json
 import hashlib
+import json
 import logging
-from datetime import timedelta, datetime, timezone
+from datetime import UTC, datetime, timedelta
 
-from homeassistant.components.sensor import SensorEntity, DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.restore_state import RestoreEntity
-from homeassistant.helpers.entity import async_generate_entity_id
 
 from .api import P2000Api
 from .coordinator import P2000DataUpdateCoordinator
 from .const import (
-    CONF_NAME,
-    CONF_GEMEENTEN,
     CONF_CAPCODES,
-    CONF_REGIOS,
     CONF_DIENSTEN,
-    CONF_PRIO1,
+    CONF_GEMEENTEN,
     CONF_LIFE,
     CONF_MELDING,
+    CONF_NAME,
+    CONF_PRIO1,
+    CONF_REGIOS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -157,7 +156,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         data = self.coordinator.data
         if isinstance(data, dict):
             self._cached_state = data.get("melding")
-            self._last_updated = datetime.now(timezone.utc).isoformat()
+            self._last_updated = datetime.now(UTC).isoformat()
             self._attributes = dict(data)
             dienstid = data.get("dienstid")
             if dienstid is not None:
