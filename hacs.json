@@ -4,5 +4,5 @@
   "render_readme": true,
   "domain": "p2000",
   "country": ["NL"],
-  "homeassistant": "2024.1.0"
+  "homeassistant": "2026.3.0"
 }
