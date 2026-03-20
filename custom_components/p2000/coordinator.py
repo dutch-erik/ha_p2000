@@ -3,14 +3,14 @@
 import logging
 import time
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, cast
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class P2000DataUpdateCoordinator(DataUpdateCoordinator):
+class P2000DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Coordinator for fetching P2000 data periodically (v2.1.5)."""
 
     def __init__(
@@ -32,13 +32,14 @@ class P2000DataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=update_interval,
         )
 
-    async def _async_update_data(self) -> dict[str, Any] | None:
+    async def _async_update_data(self) -> dict[str, Any]:
         start = time.time()
         try:
-            data = await self.hass.async_add_executor_job(self.api.get_data, self.api_filter)
+            raw = await self.hass.async_add_executor_job(self.api.get_data, self.api_filter)
+            data: dict[str, Any] | None = cast(dict[str, Any] | None, raw)
         except Exception as err:
             _LOGGER.exception("P2000: Unexpected error fetching data: %s", err)
-            return self.last_valid_data
+            return self.last_valid_data or {}
 
         duration = round(time.time() - start, 2)
 
@@ -48,7 +49,7 @@ class P2000DataUpdateCoordinator(DataUpdateCoordinator):
                 self.api_filter,
                 duration,
             )
-            return self.last_valid_data
+            return self.last_valid_data or {}
 
         self.last_valid_data = data
         self.last_update_success_time = datetime.now(UTC)
