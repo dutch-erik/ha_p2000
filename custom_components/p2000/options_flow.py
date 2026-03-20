@@ -1,51 +1,68 @@
+"""Options flow (v2.1.5) for P2000 integration."""
+
 from __future__ import annotations
+
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_NAME, CONF_ICON
 from homeassistant.helpers import selector
 
 from .const import (
-    DOMAIN,
-    CONF_WOONPLAATSEN,
     CONF_GEMEENTEN,
     CONF_CAPCODES,
-    CONF_DIENSTEN,
     CONF_REGIOS,
+    CONF_DIENSTEN,
     CONF_PRIO1,
     CONF_LIFE,
     CONF_MELDING,
+    REGIO_OPTIES,
+    DIENST_OPTIES,
 )
+from .config_flow import _normalize_user_input
+
 
 class P2000OptionsFlowHandler(config_entries.OptionsFlow):
-    """Opties-flow zodat bestaande P2000 sensoren via de UI te wijzigen zijn."""
+    """Options flow for P2000 (v2.1.5)."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry):
-        self.config_entry = config_entry
+    def __init__(self, entry):
+        self.entry = entry
 
     async def async_step_init(self, user_input=None):
-        """Toon formulier met huidige configuratie."""
-        if user_input is not None:
-            for field in [
-                CONF_WOONPLAATSEN, CONF_GEMEENTEN, CONF_CAPCODES,
-                CONF_REGIOS, CONF_DIENSTEN, CONF_MELDING
-            ]:
-                value = user_input.get(field)
-                if value:
-                    user_input[field] = [v.strip() for v in value.split(",") if v.strip()]
-            return self.async_create_entry(title="", data=user_input)
+        return await self.async_step_options()
 
-        data = self.config_entry.options or self.config_entry.data
+    async def async_step_options(self, user_input=None):
+        current = {**self.entry.data, **self.entry.options}
+
+        # Convert stored lists back to comma-separated strings for the text fields.
+        def _to_str(key: str) -> str:
+            v = current.get(key, [])
+            if isinstance(v, (list, tuple)):
+                return ", ".join(str(x) for x in v)
+            return str(v) if v else ""
 
         schema = vol.Schema({
-            vol.Required(CONF_NAME, default=data.get(CONF_NAME)): str,
-            vol.Optional(CONF_ICON, default=data.get(CONF_ICON, "mdi:fire-truck")): str,
-            vol.Optional(CONF_WOONPLAATSEN, default=", ".join(data.get(CONF_WOONPLAATSEN, []))): str,
-            vol.Optional(CONF_GEMEENTEN, default=", ".join(data.get(CONF_GEMEENTEN, []))): str,
-            vol.Optional(CONF_CAPCODES, default=", ".join(data.get(CONF_CAPCODES, []))): str,
-            vol.Optional(CONF_DIENSTEN, default=", ".join(data.get(CONF_DIENSTEN, []))): str,
-            vol.Optional(CONF_REGIOS, default=", ".join(data.get(CONF_REGIOS, []))): str,
-            vol.Optional(CONF_MELDING, default=", ".join(data.get(CONF_MELDING, []))): str,
-            vol.Optional(CONF_PRIO1, default=data.get(CONF_PRIO1, False)): bool,
-            vol.Optional(CONF_LIFE, default=data.get(CONF_LIFE, False)): bool,
+            vol.Optional(CONF_GEMEENTEN, default=_to_str(CONF_GEMEENTEN)):
+                selector.TextSelector(),
+            vol.Optional(CONF_CAPCODES, default=_to_str(CONF_CAPCODES)):
+                selector.TextSelector(),
+            vol.Optional(CONF_REGIOS, default=current.get(CONF_REGIOS, [])):
+                selector.SelectSelector(
+                    selector.SelectSelectorConfig(options=REGIO_OPTIES, multiple=True)
+                ),
+            vol.Optional(CONF_DIENSTEN, default=current.get(CONF_DIENSTEN, [])):
+                selector.SelectSelector(
+                    selector.SelectSelectorConfig(options=DIENST_OPTIES, multiple=True)
+                ),
+            # Comma-separated keywords; ALL must match (AND logic).
+            vol.Optional(CONF_MELDING, default=_to_str(CONF_MELDING)):
+                selector.TextSelector(),
+            vol.Optional(CONF_PRIO1, default=current.get(CONF_PRIO1, False)): bool,
+            vol.Optional(CONF_LIFE, default=current.get(CONF_LIFE, False)): bool,
         })
-        return self.async_show_form(step_id="init", data_schema=schema)
+
+        if user_input is not None:
+            normalized = _normalize_user_input(user_input)
+            # Saving options triggers async_reload_entry via the update listener
+            # registered in __init__.py.
+            return self.async_create_entry(title="", data=normalized)
+
+        return self.async_show_form(step_id="options", data_schema=schema, errors={})
