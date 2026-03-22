@@ -3,21 +3,16 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
 
 from .const import CONF_MELDING
 
 _LOGGER = logging.getLogger(__name__)
 
-
-async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
-    """Legacy YAML not supported (UI-only)."""
-    _LOGGER.debug("P2000 v2.1.5: async_setup called (UI-only integration).")
-    return True
-
+CONFIG_SCHEMA = cv.config_entry_only_config_schema("p2000")
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Setup P2000 platform via UI-config entry."""
