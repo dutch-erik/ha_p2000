@@ -19,7 +19,6 @@ P2000 is the Dutch paging network used by emergency services (ambulance, fire br
 - Fully configurable via the UI (no YAML required)
 - Options flow: change filters without removing and re-adding the sensor
 
----
 
 ## Installation
 
@@ -36,7 +35,6 @@ P2000 is the Dutch paging network used by emergency services (ambulance, fire br
 2. Copy the `custom_components/p2000/` folder into your HA `custom_components/` directory
 3. Restart Home Assistant
 
----
 
 ## Adding sensors
 
@@ -49,7 +47,6 @@ P2000 is the Dutch paging network used by emergency services (ambulance, fire br
 
 To change filters later, click **Configure** on the integration card.
 
----
 
 ## Configuration options
 
@@ -66,7 +63,6 @@ To change filters later, click **Configure** on the integration card.
 
 > 💡 **Tip:** Use `tekstmelding` for keyword matching — this is the clean, human-readable version of the alert (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis") rather than the raw radio code string.
 
----
 
 ## Regios NL (Veiligheidsregios)
 
@@ -98,7 +94,6 @@ To change filters later, click **Configure** on the integration card.
 | 26 | Midden- en West Brabant |
 | 27 | Flevoland |
 
----
 
 ## Diensten
 
@@ -111,7 +106,6 @@ To change filters later, click **Configure** on the integration card.
 | 5 | Lifeliner (Traumaheli) | `mdi:helicopter` |
 | 7 | DARES (Dutch Amateur Radio Emergency Service) | `mdi:radio-tower` |
 
----
 
 ## Sensor attributes
 
@@ -143,7 +137,6 @@ Each P2000 sensor exposes the following attributes:
 | `helpers.dienst_id_normalized` | Normalized service ID used for icon selection |
 | `helpers.icon_used` | MDI icon currently in use |
 
----
 
 ## Example automations
 
@@ -214,7 +207,6 @@ action:
         {{ state_attr('sensor.p2000_lifeliner_maassluis', 'tekstmelding') }}
 ```
 
----
 
 ## Example dashboard card
 
@@ -234,13 +226,11 @@ content: >
   📻 {{ state_attr('sensor.p2000_maassluis', 'capstring') }}
 ```
 
----
 
 ## Data source
 
 Alert data is provided by the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/). This integration polls the API every minute. The integration is classified as `cloud_polling` — an active internet connection is required.
 
----
 
 ## Contributing
 
@@ -261,7 +251,6 @@ ruff format custom_components/p2000/
 mypy custom_components/p2000/
 ```
 
----
 
 ## License
 
