@@ -8,7 +8,6 @@ A Home Assistant integration to display live P2000 emergency alerts from [Alarme
 
 P2000 is the Dutch paging network used by emergency services (ambulance, fire brigade, police, KNRM, and Lifeliner helicopters). This integration polls the AlarmeringDroid API and exposes matching alerts as Home Assistant sensors, allowing you to build automations, notifications, and dashboard cards around them.
 
----
 
 ## Features
 
