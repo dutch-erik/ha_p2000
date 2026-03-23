@@ -43,7 +43,7 @@ P2000 is the Dutch paging network used by emergency services (ambulance, fire br
 1. Go to **Settings → Integrations**
 2. Click **+ Add integration** and search for **P2000**
 3. Fill in the configuration form (see [Configuration options](#configuration-options) below)
-4. Click **Submit** — the sensor appears immediately without a restart
+4. Click **Submit**, the sensor appears immediately without a restart
 
 To change filters later, click **Configure** on the integration card.
 
@@ -61,7 +61,7 @@ To change filters later, click **Configure** on the integration card.
 | **Prio 1 only** | `bool` | When enabled, only show priority 1 alerts |
 | **Life** | `bool` | When enabled, only show Lifeliner / trauma helicopter alerts |
 
-> 💡 **Tip:** Use `tekstmelding` for keyword matching — this is the clean, human-readable version of the alert (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis") rather than the raw radio code string.
+> 💡 **Tip:** The `tekstmelding` attribute contains the human-readable alert text (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis"). Use this for keyword filtering rather than the raw radio code in `melding`.
 
 
 ## Regios NL (Veiligheidsregios)
@@ -229,7 +229,7 @@ content: >
 
 ## Data source
 
-Alert data is provided by the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/). This integration polls the API every minute. The integration is classified as `cloud_polling` — an active internet connection is required.
+Alert data is provided by the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/). This integration polls the API every minute. The integration is classified as `cloud_polling` an active internet connection is required.
 
 
 ## Contributing
