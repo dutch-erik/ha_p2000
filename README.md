@@ -161,7 +161,7 @@ action:
         tag: p2000_maassluis
 ```
 
-### Priority 1 only — high priority push
+### Priority 1 only - high priority push
 
 ```yaml
 alias: P2000 Prio 1
@@ -234,20 +234,12 @@ Alert data is provided by the [AlarmeringDroid API](https://beta.alarmeringdroid
 
 ## Contributing
 
-Pull requests and issues are welcome via [GitHub](https://github.com/dutch-erik/ha_p2000/issues).
-
-For development setup:
+Issues and PRs welcome via [GitHub](https://github.com/dutch-erik/ha_p2000/issues).
 
 ```bash
 pip install -r requirements-dev.txt
-
-# Lint
 ruff check custom_components/p2000/
-
-# Format
 ruff format custom_components/p2000/
-
-# Type check
 mypy custom_components/p2000/
 ```
 
