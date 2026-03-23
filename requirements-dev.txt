@@ -1,0 +1,8 @@
+# Development dependencies for linting and type checking
+# Install with: pip install -r requirements-dev.txt
+
+ruff>=0.4.0
+mypy>=1.10.0
+
+# Stubs and HA types needed for mypy to resolve homeassistant imports
+homeassistant>=2024.1.0

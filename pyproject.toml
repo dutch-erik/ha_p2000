@@ -1,0 +1,53 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes (unused imports, undefined names, etc.)
+    "I",    # isort (import ordering)
+    "B",    # flake8-bugbear (common bug patterns)
+    "UP",   # pyupgrade (modernise syntax)
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long — ruff format handles this
+    "SIM108", # ternary operator — sometimes less readable
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["custom_components"]
+known-third-party = ["homeassistant", "voluptuous", "requests", "urllib3"]
+split-on-trailing-comma = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+
+[tool.mypy]
+python_version = "3.12"
+strict = false                  # full strict is too noisy for HA integrations
+warn_return_any = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true    # all functions must have type annotations
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+show_error_codes = true
+
+# homeassistant ships its own py.typed so mypy can resolve its types.
+# If you get "Cannot find implementation" errors, install homeassistant
+# in your dev environment: pip install homeassistant
+[[tool.mypy.overrides]]
+module = [
+    "homeassistant.*",
+    "requests.*",
+    "urllib3.*",
+    "voluptuous.*",
+]
+ignore_missing_imports = true
