@@ -45,11 +45,11 @@ To change a filter later, click **Configure** on the integration card. No restar
 | Option | Type | Required | Default | Description |
 |---|---|---|---|---|
 | **Name** | `string` | ✅ | — | Unique name for this sensor |
-| **Gemeenten** | `string` | ❌ | — | Comma-separated municipality names, lowercase — e.g. `maassluis, vlaardingen` |
-| **Capcodes** | `string` | ❌ | — | Comma-separated capcodes — e.g. `1420059, 1400121` |
+| **Gemeenten** | `string` | ❌ | — | Comma-separated municipality names, lowercase, e.g. `maassluis, vlaardingen` |
+| **Capcodes** | `string` | ❌ | — | Comma-separated capcodes, e.g. `1420059, 1400121` |
 | **Regios** | `list` | ❌ | — | One or more Veiligheidsregio numbers (see [Regios NL](#regios-nl) below) |
 | **Diensten** | `list` | ❌ | — | One or more service types (see [Diensten](#diensten) below) |
-| **Melding** | `string` | ❌ | — | Keywords that must ALL appear in the alert — e.g. `MAASSL, reanimatie` |
+| **Melding** | `string` | ❌ | — | Keywords that must ALL appear in the alert, e.g. `MAASSL, reanimatie` |
 | **Prio 1 only** | `bool` | ❌ | `false` | Only show priority 1 alerts |
 | **Life** | `bool` | ❌ | `false` | Only show Lifeliner / trauma helicopter alerts |
 
