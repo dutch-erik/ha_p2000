@@ -4,67 +4,60 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A Home Assistant integration to display live P2000 emergency alerts from [AlarmeringDroid](https://beta.alarmeringdroid.nl/).
+A Home Assistant integration for live P2000 emergency alerts, powered by [AlarmeringDroid](https://beta.alarmeringdroid.nl/).
 
-P2000 is the Dutch paging network used by emergency services (ambulance, fire brigade, police, KNRM, and Lifeliner helicopters). This integration polls the AlarmeringDroid API and exposes matching alerts as Home Assistant sensors, allowing you to build automations, notifications, and dashboard cards around them.
-
+P2000 is the Dutch paging network for emergency services. This integration lets you track alerts in your area and build automations around them — think push notifications when the fire brigade is dispatched to your street, or a TTS announcement when a Lifeliner is inbound.
 
 ## Features
 
-- Live P2000 alerts as Home Assistant sensors
-- Filter by region (Veiligheidsregio), municipality (Gemeenten), capcode, service type (Diensten), and keyword
-- Multiple keyword filtering with AND logic (all keywords must match)
-- Automatic icon based on service type (ambulance, fire truck, helicopter, etc.)
-- Sensor state restored after HA restart
-- Fully configurable via the UI (no YAML required)
-- Options flow: change filters without removing and re-adding the sensor
-
+- Live P2000 alerts as HA sensors, polled every minute
+- Filter by region, municipality, capcode, service type, or keyword
+- Multiple keywords supported with AND logic
+- Icon automatically set based on service type
+- Sensor state survives HA restarts
+- Fully UI-configurable — no YAML needed
 
 ## Installation
 
-### Via HACS (recommended)
+### Via HACS
 
-1. Open HACS in Home Assistant
-2. Search for **HA P2000**
-3. Click **Download**
-4. Restart Home Assistant
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=dutch-erik&repository=ha_p2000&category=integration)
+
+1. Click **Open HACS Repository on My** above, or search for **HA P2000** in HACS
+2. Click **Download** and restart Home Assistant
 
 ### Manual
 
 1. Download the latest release from [GitHub Releases](https://github.com/dutch-erik/ha_p2000/releases)
-2. Copy the `custom_components/p2000/` folder into your HA `custom_components/` directory
+2. Copy `custom_components/p2000/` to your HA `custom_components/` directory
 3. Restart Home Assistant
 
+## Setup
 
-## Adding sensors
+[![Start Config Flow](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=p2000)
 
-### Via the UI
+Click **Add Integration to My** above, or go to **Settings → Integrations → Add integration → P2000**. Each sensor gets its own filter — you can add multiple sensors, e.g. one for all alerts in your municipality and one for Lifeliners only.
 
-1. Go to **Settings → Integrations**
-2. Click **+ Add integration** and search for **P2000**
-3. Fill in the configuration form (see [Configuration options](#configuration-options) below)
-4. Click **Submit**, the sensor appears immediately without a restart
-
-To change filters later, click **Configure** on the integration card.
-
+To change a filter later, click **Configure** on the integration card. No restart needed.
 
 ## Configuration options
 
-| Option | Type | Description |
-|---|---|---|
-| **Name** | `string` | Unique name for this sensor (required) |
-| **Gemeenten** | `string` | Comma-separated municipality names, e.g. `maassluis, rotterdam` (lowercase) |
-| **Capcodes** | `string` | Comma-separated P2000 capcodes to filter on, e.g. `1420059, 1400121` |
-| **Regios** | `list` | One or more Veiligheidsregio numbers (see [Regios](#regios-nl-veiligheidsregios) below) |
-| **Diensten** | `list` | One or more service types (see [Diensten](#diensten) below) |
-| **Melding** | `string` | Comma-separated keywords — **all** must be present in the alert text (AND logic), e.g. `MAASSL, reanimatie` |
-| **Prio 1 only** | `bool` | When enabled, only show priority 1 alerts |
-| **Life** | `bool` | When enabled, only show Lifeliner / trauma helicopter alerts |
+| Option | Type | Required | Default | Description |
+|---|---|---|---|---|
+| **Name** | `string` | ✅ | — | Unique name for this sensor |
+| **Gemeenten** | `string` | ❌ | — | Comma-separated municipality names, lowercase — e.g. `maassluis, vlaardingen` |
+| **Capcodes** | `string` | ❌ | — | Comma-separated capcodes — e.g. `1420059, 1400121` |
+| **Regios** | `list` | ❌ | — | One or more Veiligheidsregio numbers (see table below) |
+| **Diensten** | `list` | ❌ | — | One or more service types (see table below) |
+| **Melding** | `string` | ❌ | — | Keywords that must ALL appear in the alert — e.g. `MAASSL, reanimatie` |
+| **Prio 1 only** | `bool` | ❌ | `false` | Only show priority 1 alerts |
+| **Life** | `bool` | ❌ | `false` | Only show Lifeliner / trauma helicopter alerts |
 
-> 💡 **Tip:** The `tekstmelding` attribute contains the human-readable alert text (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis"). Use this for keyword filtering rather than the raw radio code in `melding`.
+> **Tip:** The `tekstmelding` attribute contains the human-readable alert text (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis"). Use this for keyword filtering rather than the raw radio code in `melding`.
 
+> ⚠️ At least one filter (Gemeenten, Capcodes, Regios, Diensten or Melding) is recommended — without any filter the sensor shows alerts from the entire Netherlands.
 
-## Regios NL (Veiligheidsregios)
+## Regios NL
 
 | # | Regio |
 |---|---|
@@ -94,7 +87,6 @@ To change filters later, click **Configure** on the integration card.
 | 26 | Midden- en West Brabant |
 | 27 | Flevoland |
 
-
 ## Diensten
 
 | # | Dienst | Icon |
@@ -104,133 +96,103 @@ To change filters later, click **Configure** on the integration card.
 | 3 | Ambulance | `mdi:ambulance` |
 | 4 | KNRM | `mdi:ship` |
 | 5 | Lifeliner (Traumaheli) | `mdi:helicopter` |
-| 7 | DARES (Dutch Amateur Radio Emergency Service) | `mdi:radio-tower` |
-
+| 7 | DARES | `mdi:radio-tower` |
 
 ## Sensor attributes
 
-Each P2000 sensor exposes the following attributes:
-
 | Attribute | Description |
 |---|---|
-| `melding` | Raw alert text (radio code format) |
+| `melding` | Raw alert text (radio code) |
 | `tekstmelding` | Human-readable alert text |
-| `dienst` | Service name (e.g. "Ambulance") |
-| `dienstid` | Service ID number |
+| `dienst` | Service name |
+| `dienstid` | Service ID |
 | `regio` | Region name |
-| `regioid` | Region ID number |
 | `plaats` | City / postal code area |
 | `postcode` | Postal code |
 | `straat` | Street name |
-| `datum` | Date of alert |
-| `tijd` | Time of alert |
-| `prio1` | `1` if priority 1, otherwise `0` |
+| `datum` | Date |
+| `tijd` | Time |
+| `prio1` | `1` if priority 1 |
 | `brandinfo` | Fire incident type (if applicable) |
 | `grip` | GRIP level (if applicable) |
-| `capcodes` | List of dispatched units with descriptions |
-| `capstring` | Formatted string of dispatched units |
-| `subitems` | Related alerts (e.g. Lifeliner dispatched alongside Brandweer) |
-| `latitude` | GPS latitude (if available) |
-| `longitude` | GPS longitude (if available) |
-| `filter` | Active filter configuration for this sensor |
+| `capcodes` | Dispatched units |
+| `capstring` | Dispatched units as formatted string |
+| `subitems` | Related alerts (e.g. Lifeliner dispatched to same incident) |
+| `latitude` / `longitude` | GPS coordinates (if available) |
 | `last_updated` | UTC timestamp of last update |
-| `helpers.dienst_id_normalized` | Normalized service ID used for icon selection |
-| `helpers.icon_used` | MDI icon currently in use |
-
 
 ## Example automations
 
-### Push notification on any alert in your municipality
+### Alert notification
 
 ```yaml
-alias: P2000 melding notificatie
+alias: P2000 notificatie
 trigger:
   - platform: state
-    entity_id: sensor.p2000_maassluis
+    entity_id: sensor.p2000_mijn_sensor
 action:
   - service: notify.mobile_app_your_phone
     data:
-      title: >
-        {{ state_attr('sensor.p2000_maassluis', 'dienst') }} — Maassluis
+      title: "{{ state_attr('sensor.p2000_mijn_sensor', 'dienst') }}"
       message: >
-        {{ state_attr('sensor.p2000_maassluis', 'tekstmelding') }}
-        📍 {{ state_attr('sensor.p2000_maassluis', 'straat') }},
-        {{ state_attr('sensor.p2000_maassluis', 'plaats') }}
-        🕐 {{ state_attr('sensor.p2000_maassluis', 'tijd') }}
-      data:
-        tag: p2000_maassluis
+        {{ state_attr('sensor.p2000_mijn_sensor', 'tekstmelding') }}
+        📍 {{ state_attr('sensor.p2000_mijn_sensor', 'straat') }},
+        {{ state_attr('sensor.p2000_mijn_sensor', 'plaats') }}
+        🕐 {{ state_attr('sensor.p2000_mijn_sensor', 'tijd') }}
 ```
 
-### Priority 1 only - high priority push
+### Prio 1 only
 
 ```yaml
 alias: P2000 Prio 1
 trigger:
   - platform: state
-    entity_id: sensor.p2000_maassluis
+    entity_id: sensor.p2000_mijn_sensor
 condition:
   - condition: template
-    value_template: >
-      {{ state_attr('sensor.p2000_maassluis', 'prio1') | int == 1 }}
+    value_template: "{{ state_attr('sensor.p2000_mijn_sensor', 'prio1') | int == 1 }}"
 action:
   - service: notify.mobile_app_your_phone
     data:
-      title: "🚨 PRIO 1 — Maassluis"
-      message: "{{ states('sensor.p2000_maassluis') }}"
+      title: "🚨 PRIO 1"
+      message: "{{ states('sensor.p2000_mijn_sensor') }}"
       data:
         priority: high
         ttl: 0
 ```
 
-### Lifeliner alert with TTS announcement
+### Lifeliner with TTS
 
 ```yaml
 alias: P2000 Lifeliner
 trigger:
   - platform: state
-    entity_id: sensor.p2000_lifeliner_maassluis
+    entity_id: sensor.p2000_lifeliner
 action:
-  - service: notify.mobile_app_your_phone
-    data:
-      title: "🚁 LIFELINER"
-      message: >
-        {{ state_attr('sensor.p2000_lifeliner_maassluis', 'tekstmelding') }}
-      data:
-        priority: high
-        ttl: 0
   - service: tts.speak
     target:
       entity_id: media_player.your_speaker
     data:
-      message: >
-        Lifeliner melding:
-        {{ state_attr('sensor.p2000_lifeliner_maassluis', 'tekstmelding') }}
+      message: "{{ state_attr('sensor.p2000_lifeliner', 'tekstmelding') }}"
 ```
-
 
 ## Example dashboard card
 
 ```yaml
 type: markdown
-title: >
-  {{ state_attr('sensor.p2000_maassluis', 'dienst') | default('P2000') }}
+title: "{{ state_attr('sensor.p2000_mijn_sensor', 'dienst') | default('P2000') }}"
 content: >
-  ## {{ states('sensor.p2000_maassluis') }}
+  **{{ state_attr('sensor.p2000_mijn_sensor', 'tekstmelding') }}**
 
-  📍 {{ state_attr('sensor.p2000_maassluis', 'straat') }}
-  {{ state_attr('sensor.p2000_maassluis', 'postcode') }}
+  📍 {{ state_attr('sensor.p2000_mijn_sensor', 'straat') }}
+  🕐 {{ state_attr('sensor.p2000_mijn_sensor', 'datum') }} {{ state_attr('sensor.p2000_mijn_sensor', 'tijd') }}
 
-  🕐 {{ state_attr('sensor.p2000_maassluis', 'datum') }}
-  {{ state_attr('sensor.p2000_maassluis', 'tijd') }}
-
-  📻 {{ state_attr('sensor.p2000_maassluis', 'capstring') }}
+  {{ state_attr('sensor.p2000_mijn_sensor', 'capstring') }}
 ```
-
 
 ## Data source
 
-Alert data is provided by the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/). This integration polls the API every minute. The integration is classified as `cloud_polling` an active internet connection is required.
-
+Alert data comes from the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/), polled every minute.
 
 ## Contributing
 
@@ -243,7 +205,6 @@ ruff format custom_components/p2000/
 mypy custom_components/p2000/
 ```
 
-
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
