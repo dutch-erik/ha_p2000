@@ -196,15 +196,9 @@ Alert data comes from the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/
 
 ## Contributing
 
-Issues and PRs welcome via [GitHub](https://github.com/dutch-erik/ha_p2000/issues).
-
-```bash
-pip install -r requirements-dev.txt
-ruff check custom_components/p2000/
-ruff format custom_components/p2000/
-mypy custom_components/p2000/
-```
+Contributions, bug reports, feature requests are welcome. Feel free to open an issue or submit a pull request.
+ [GitHub](https://github.com/dutch-erik/ha_p2000/issues)
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
