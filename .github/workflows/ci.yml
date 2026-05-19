@@ -27,16 +27,16 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run ruff (auto-fix)
-        run: ruff check --fix custom_components/p2000/
+        run: ruff check --fix custom_components/p2000_nl/
 
       - name: Run ruff (check no unfixable errors remain)
-        run: ruff check custom_components/p2000/
+        run: ruff check custom_components/p2000_nl/
 
       - name: Run ruff (formatter — auto-fix)
-        run: ruff format custom_components/p2000/
+        run: ruff format custom_components/p2000_nl/
 
       - name: Run mypy (type checker)
-        run: mypy custom_components/p2000/
+        run: mypy custom_components/p2000_nl/
 
   validate-manifest:
     name: Validate manifest.json
@@ -47,13 +47,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check manifest.json is valid JSON
-        run: python3 -c "import json, sys; json.load(open('custom_components/p2000/manifest.json')); print('manifest.json OK')"
+        run: python3 -c "import json, sys; json.load(open('custom_components/p2000_nl/manifest.json')); print('manifest.json OK')"
 
       - name: Check required manifest fields
         run: |
           python3 - <<'EOF'
           import json, sys
-          m = json.load(open("custom_components/p2000/manifest.json"))
+          m = json.load(open("custom_components/p2000_nl/manifest.json"))
           required = ["domain", "name", "version", "config_flow", "iot_class"]
           missing = [f for f in required if f not in m]
           if missing:
