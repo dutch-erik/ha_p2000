@@ -59,25 +59,10 @@ def detect_service_from_text(text: str | None) -> str | None:
 async def async_setup_entry(
     hass: Any, entry: Any, async_add_entities: Any
 ) -> None:
-    from .aggregator_sensor import P2000AggregatorSensor, CONF_AGGREGATOR_NAME, CONF_AGGREGATOR_SENSORS  # noqa: PLC0415
-    from .statistics_sensor import P2000StatisticsSensor  # noqa: PLC0415
-
     conf = entry.data
-
-    # --- Aggregator sensor entry ---
-    if conf.get(CONF_AGGREGATOR_SENSORS):
-        agg_name = conf.get(CONF_AGGREGATOR_NAME, "Aggregator")
-        sensor_ids = conf[CONF_AGGREGATOR_SENSORS]
-        async_add_entities(
-            [P2000AggregatorSensor(hass, agg_name, sensor_ids, entry.entry_id)],
-            True,
-        )
-        return
-
-    # --- Regular alert sensor + statistics sensor ---
     name = conf.get(CONF_NAME)
 
-    api_filter: dict[str, Any] = {}
+    api_filter = {}
     for f in (CONF_GEMEENTEN, CONF_CAPCODES, CONF_DIENSTEN, CONF_REGIOS):
         if conf.get(f):
             api_filter[f] = conf[f]
@@ -87,6 +72,8 @@ async def async_setup_entry(
     if conf.get(CONF_LIFE):
         api_filter[CONF_LIFE] = "1"
 
+    # FIX (#4): CONF_MELDING is now always stored as a list of keywords.
+    # Pass the full list to the API so all keywords are filtered (AND logic).
     if conf.get(CONF_MELDING):
         v = conf[CONF_MELDING]
         api_filter[CONF_MELDING] = v if isinstance(v, list) else [v]
@@ -96,10 +83,7 @@ async def async_setup_entry(
     await coordinator.async_refresh()
 
     async_add_entities(
-        [
-            P2000Sensor(hass, coordinator, name, api_filter, entry.entry_id),
-            P2000StatisticsSensor(hass, coordinator, name, api_filter, entry.entry_id),
-        ],
+        [P2000Sensor(hass, coordinator, name, api_filter, entry.entry_id)],
         True,
     )
 
@@ -139,22 +123,21 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         self._forced_icon = forced_icon
 
         unique_str = name + json.dumps(api_filter, sort_keys=True, ensure_ascii=False) + entry_id
-        self._attr_unique_id = f"p2000_nl_{hashlib.md5(unique_str.encode()).hexdigest()}"
+        self._attr_unique_id = f"p2000_{hashlib.md5(unique_str.encode()).hexdigest()}"
 
         # FIX (#13): Use suggested_object_id instead of forcing _attr_entity_id
         # directly, so HA's entity registry stays in control.
         slug = name.lower().replace(" ", "_")
-        self._attr_suggested_object_id = f"p2000_nl_{slug}"
+        self._attr_suggested_object_id = f"p2000_{slug}"
         self._attr_name = f"P2000 {name}"
 
     @property
     def device_info(self) -> DeviceInfo:
         return DeviceInfo(
-            identifiers={("p2000_nl", "p2000_nl_device")},
-            name="P2000",
-            manufacturer="AlarmeringDroid",
-            model="Live Alerts",
-            configuration_url="https://beta.alarmeringdroid.nl",
+            identifiers={("p2000", "p2000_device")},
+            name="P2000 Meldingen",
+            manufacturer="P2000 Nederland",
+            model="P2000 Live Alerts",
         )
 
     async def async_added_to_hass(self) -> None:
@@ -278,4 +261,3 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         out["last_updated"] = self._last_updated
 
         return out
-
