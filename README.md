@@ -6,7 +6,7 @@
 
 A Home Assistant integration for live P2000 emergency alerts, powered by [AlarmeringDroid](https://beta.alarmeringdroid.nl/).
 
-P2000 is the Dutch paging network for emergency services. This integration lets you track alerts in your area and build automations around them, get a push notifications when the fire brigade is dispatched to your street, or a TTS announcement when a Lifeliner is inbound.
+P2000 is the Dutch paging network for emergency services. This integration lets you track alerts in your area and build automations around them — think push notifications when the fire brigade is dispatched to your street, or a TTS announcement when a Lifeliner is inbound.
 
 ## Features
 
@@ -15,7 +15,7 @@ P2000 is the Dutch paging network for emergency services. This integration lets 
 - Multiple keywords supported with AND logic
 - Icon automatically set based on service type
 - Sensor state survives HA restarts
-- Fully UI-configurable, no YAML needed
+- Fully UI-configurable — no YAML needed
 
 ## Installation
 
@@ -29,14 +29,14 @@ P2000 is the Dutch paging network for emergency services. This integration lets 
 ### Manual
 
 1. Download the latest release from [GitHub Releases](https://github.com/dutch-erik/ha_p2000/releases)
-2. Copy `custom_components/p2000/` to your HA `custom_components/` directory
+2. Copy `custom_components/p2000_nl/` to your HA `custom_components/` directory
 3. Restart Home Assistant
 
 ## Setup
 
-[![Start Config Flow](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=p2000)
+[![Start Config Flow](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=p2000_nl)
 
-Click **Add Integration to My** above, or go to **Settings → Integrations → Add integration → P2000**. Each sensor gets its own filter, you can add multiple sensors, e.g. one for all alerts in your municipality and one for Lifeliners only.
+Click **Add Integration to My** above, or go to **Settings → Integrations → Add integration → P2000**. Each sensor gets its own filter — you can add multiple sensors, e.g. one for all alerts in your municipality and one for Lifeliners only.
 
 To change a filter later, click **Configure** on the integration card. No restart needed.
 
@@ -45,17 +45,17 @@ To change a filter later, click **Configure** on the integration card. No restar
 | Option | Type | Required | Default | Description |
 |---|---|---|---|---|
 | **Name** | `string` | ✅ | — | Unique name for this sensor |
-| **Gemeenten** | `string` | ❌ | — | Comma-separated municipality names, lowercase, e.g. `maassluis, vlaardingen` |
-| **Capcodes** | `string` | ❌ | — | Comma-separated capcodes, e.g. `1420059, 1400121` |
+| **Gemeenten** | `string` | ❌ | — | Comma-separated municipality names, lowercase — e.g. `maassluis, vlaardingen` |
+| **Capcodes** | `string` | ❌ | — | Comma-separated capcodes — e.g. `1420059, 1400121` |
 | **Regios** | `list` | ❌ | — | One or more Veiligheidsregio numbers (see [Regios NL](#regios-nl) below) |
 | **Diensten** | `list` | ❌ | — | One or more service types (see [Diensten](#diensten) below) |
-| **Melding** | `string` | ❌ | — | Keywords that must ALL appear in the alert, e.g. `MAASSL, reanimatie` |
+| **Melding** | `string` | ❌ | — | Keywords that must ALL appear in the alert — e.g. `MAASSL, reanimatie` |
 | **Prio 1 only** | `bool` | ❌ | `false` | Only show priority 1 alerts |
 | **Life** | `bool` | ❌ | `false` | Only show Lifeliner / trauma helicopter alerts |
 
 > **Tip:** The `tekstmelding` attribute contains the human-readable alert text (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis"). Use this for keyword filtering rather than the raw radio code in `melding`.
 
-> ⚠️ At least one filter (Gemeenten, Capcodes, Regios, Diensten or Melding) is recommended, without any filter the sensor shows alerts from the entire Netherlands.
+> ⚠️ At least one filter (Gemeenten, Capcodes, Regios, Diensten or Melding) is recommended — without any filter the sensor shows alerts from the entire Netherlands.
 
 ## Regios NL
 
@@ -196,9 +196,15 @@ Alert data comes from the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/
 
 ## Contributing
 
-Contributions, bug reports, feature requests are welcome. Feel free to open an issue or submit a pull request.
- [GitHub](https://github.com/dutch-erik/ha_p2000/issues)
+Issues and PRs welcome via [GitHub](https://github.com/dutch-erik/ha_p2000/issues).
+
+```bash
+pip install -r requirements-dev.txt
+ruff check custom_components/p2000_nl/
+ruff format custom_components/p2000_nl/
+mypy custom_components/p2000_nl/
+```
 
 ## License
 
-MIT - see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
