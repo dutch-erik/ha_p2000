@@ -1,4 +1,4 @@
-"""P2000 sensor (v2.2.1) — all bug fixes applied."""
+"""P2000 sensor (v2.2.3) — all bug fixes applied."""
 
 import hashlib
 import json
@@ -125,19 +125,18 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         unique_str = name + json.dumps(api_filter, sort_keys=True, ensure_ascii=False) + entry_id
         self._attr_unique_id = f"p2000_nl_{hashlib.md5(unique_str.encode()).hexdigest()}"
 
-        # FIX (#13): Use suggested_object_id instead of forcing _attr_entity_id
-        # directly, so HA's entity registry stays in control.
         slug = name.lower().replace(" ", "_")
-        self._attr_suggested_object_id = f"p2000_nl_{slug}"
+        self._attr_suggested_object_id = slug
         self._attr_name = f"P2000 {name}"
 
     @property
     def device_info(self) -> DeviceInfo:
         return DeviceInfo(
             identifiers={("p2000_nl", "p2000_nl_device")},
-            name="P2000 Meldingen",
-            manufacturer="P2000 Nederland",
-            model="P2000 Live Alerts",
+            name="P2000",
+            manufacturer="AlarmeringDroid",
+            model="Live Alerts",
+            configuration_url="https://beta.alarmeringdroid.nl",
         )
 
     async def async_added_to_hass(self) -> None:
