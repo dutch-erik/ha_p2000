@@ -3,6 +3,9 @@
 [![GitHub Release](https://img.shields.io/github/v/release/dutch-erik/ha_p2000)](https://github.com/dutch-erik/ha_p2000/releases)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Maintained](https://img.shields.io/badge/Maintained-yes-green.svg)](https://github.com/dutch-erik/ha_p2000)
+[![GitHub Stars](https://img.shields.io/github/stars/dutch-erik/ha_p2000)](https://github.com/dutch-erik/ha_p2000/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/dutch-erik/ha_p2000)](https://github.com/dutch-erik/ha_p2000/issues)
 
 A Home Assistant integration for live P2000 NL emergency alerts, powered by [AlarmeringDroid](https://beta.alarmeringdroid.nl/).
 
