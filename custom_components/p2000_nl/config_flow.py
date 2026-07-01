@@ -1,4 +1,4 @@
-"""Config flow (v2.2.1) for P2000 integration (UI-only)."""
+"""Config flow for P2000 integration (UI-only)."""
 
 from __future__ import annotations
 
@@ -13,8 +13,6 @@ from homeassistant.helpers import selector
 from homeassistant.helpers.selector import SelectOptionDict, SelectSelectorConfig
 
 from .const import (
-    CONF_AGGREGATOR_NAME,
-    CONF_AGGREGATOR_SENSORS,
     CONF_CAPCODES,
     CONF_DIENSTEN,
     CONF_GEMEENTEN,
@@ -89,52 +87,6 @@ class P2000ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(step_id="user", data_schema=FORM_SCHEMA, errors=errors)
 
-    async def async_step_aggregator(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
-        """Create an aggregator sensor that watches selected P2000 sensors."""
-        errors: dict[str, str] = {}
-
-        # Collect all existing P2000 sensor entity IDs from the state machine
-        existing_sensors = [
-            state.entity_id
-            for state in self.hass.states.async_all()
-            if state.entity_id.startswith("sensor.p2000_nl_")
-            and not state.entity_id.endswith(("_statistics", "_aggregator"))
-        ]
-
-        if not existing_sensors:
-            return self.async_abort(reason="no_sensors_found")
-
-        schema = vol.Schema({
-            vol.Required(CONF_AGGREGATOR_NAME): str,
-            vol.Required(CONF_AGGREGATOR_SENSORS): selector.SelectSelector(
-                selector.SelectSelectorConfig(
-                    options=existing_sensors,
-                    multiple=True,
-                )
-            ),
-        })
-
-        if user_input is not None:
-            name = user_input[CONF_AGGREGATOR_NAME]
-            sensors = user_input[CONF_AGGREGATOR_SENSORS]
-            if not sensors:
-                errors[CONF_AGGREGATOR_SENSORS] = "select_at_least_one"
-            else:
-                entry_data = {
-                    CONF_AGGREGATOR_NAME: name,
-                    CONF_AGGREGATOR_SENSORS: sensors,
-                }
-                unique_id = self._compute_unique_id(entry_data)
-                await self.async_set_unique_id(unique_id)
-                self._abort_if_unique_id_configured()
-                return self.async_create_entry(title=f"P2000 {name}", data=entry_data)
-
-        return self.async_show_form(
-            step_id="aggregator", data_schema=schema, errors=errors
-        )
-
     @staticmethod
     @callback
     def async_get_options_flow(
@@ -164,4 +116,3 @@ def _normalize_user_input(user_input: dict[str, Any]) -> dict[str, Any]:
             parts = [p.lower() for p in parts]
         result[key] = parts
     return result
-
