@@ -1,4 +1,4 @@
-"""P2000 API wrapper (v2.2.1) with defensive parsing and retries."""
+"""P2000 API wrapper with defensive parsing and retries."""
 
 import json
 import logging
@@ -12,7 +12,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class P2000Api:
-    """P2000 API client with retry support (v2.2.1)."""
+    """P2000 API client with retry support."""
 
     # Note: the remote API expects JSON appended to the URL path.
     url = "https://beta.alarmeringdroid.nl/api2/find/"
@@ -93,9 +93,37 @@ class P2000Api:
         if not meldingen:
             return None
 
-        # Return the first matching melding; normalise location keys.
-        result: dict[str, Any] = meldingen[0]
-        result["latitude"] = result.pop("lat", None)
-        result["longitude"] = result.pop("lon", None)
-        return result
+        # Get the diensten filter if set
+        diensten_filter = api_filter.get("diensten")
+        if diensten_filter and not isinstance(diensten_filter, list):
+            diensten_filter = [str(diensten_filter)]
+        elif diensten_filter:
+            diensten_filter = [str(d) for d in diensten_filter]
 
+        # Find the best matching melding:
+        # If a diensten filter is set and the main melding's dienstid does not
+        # match, check subitems for a match and promote that subitem as the
+        # result (keeping the parent's subitems for context).
+        result: dict[str, Any] = meldingen[0]
+
+        if diensten_filter:
+            main_dienstid = str(result.get("dienstid", ""))
+            if main_dienstid not in diensten_filter:
+                # Look in subitems for a matching dienst
+                subitems = result.get("subitems") or []
+                for subitem in subitems:
+                    if str(subitem.get("dienstid", "")) in diensten_filter:
+                        # Promote subitem to result, keep subitems for context
+                        promoted = dict(subitem)
+                        promoted["subitems"] = subitems
+                        result = promoted
+                        _LOGGER.debug(
+                            "P2000: promoted subitem dienstid=%s as main result",
+                            promoted.get("dienstid"),
+                        )
+                        break
+
+        # Normalise location keys (lat/lon → latitude/longitude)
+        result["latitude"] = result.pop("lat", result.get("latitude"))
+        result["longitude"] = result.pop("lon", result.get("longitude"))
+        return result
