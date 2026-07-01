@@ -1,4 +1,4 @@
-"""Constants for P2000 integration (v2.2.1)."""
+"""Constants for P2000 integration."""
 
 DOMAIN = "p2000_nl"
 
@@ -11,10 +11,6 @@ CONF_REGIOS = "regios"
 CONF_PRIO1 = "prio1"
 CONF_LIFE = "life"
 CONF_MELDING = "melding"
-
-# Aggregator sensor config keys
-CONF_AGGREGATOR_NAME = "aggregator_name"
-CONF_AGGREGATOR_SENSORS = "aggregator_sensors"
 
 # Options lists (used in flows)
 REGIO_OPTIES = [
@@ -53,4 +49,3 @@ DIENST_OPTIES = [
     {"value": "5", "label": "Lifeliner (Traumaheli)"},
     {"value": "7", "label": "DARES"},
 ]
-
