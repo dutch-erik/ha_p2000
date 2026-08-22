@@ -1,26 +1,8 @@
-"""Utility helpers for P2000 integration (v2.2.1)."""
+"""Utility helpers for P2000 integration."""
 
 import hashlib
 import json
 from typing import Any
-
-
-def _normalize_value(v: Any) -> Any:
-    """Normalize a single config value to a stable, comparable form."""
-    if v is None:
-        return None
-    if isinstance(v, str):
-        return v.strip()
-    if isinstance(v, (list, tuple)):
-        norm = []
-        for item in v:
-            if isinstance(item, str):
-                norm.append(item.strip().lower())
-            else:
-                norm.append(item)
-        uniq = sorted({i for i in norm if i not in (None, "", [])})
-        return uniq
-    return v
 
 
 def normalize_filter(data: dict[str, Any]) -> dict[str, Any]:
@@ -66,4 +48,3 @@ def stable_hash(data: Any) -> str:
     except (TypeError, ValueError):
         s = str(data)
     return hashlib.md5(s.encode()).hexdigest()
-
