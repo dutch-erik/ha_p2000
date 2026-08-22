@@ -46,13 +46,13 @@ To change a filter later, click **Configure** on the integration card. No restar
 
 | Option | Type | Required | Default | Description |
 |---|---|---|---|---|
-| **Name** | `string` | ✅ | n/a | Unique name for this sensor |
-| **Gemeenten** | `string` | ❌ | n/a | Comma-separated municipality names, lowercase, e.g. `maassluis, vlaardingen` |
-| **Capcodes** | `string` | ❌ | n/a | Comma-separated capcodes, e.g. `1420059, 1400121` |
-| **Regios** | `list` | ❌ | n/a | One or more Veiligheidsregio numbers (see [Regios NL](#regios-nl) below) |
-| **Diensten** | `list` | ❌ | n/a | One or more service types (see [Diensten](#diensten) below) |
-| **Melding** | `string` | ❌ | n/a | Keywords that must ALL appear in the alert, e.g. `MAASSL, reanimatie` |
-| **GRIP** | `select` | ❌ | n/a | Minimum GRIP level (1-5); only alerts at or above this level are shown |
+| **Name** | `string` | ✅ | - | Unique name for this sensor |
+| **Gemeenten** | `string` | ❌ | - | Comma-separated municipality names, lowercase, e.g. `maassluis, vlaardingen` |
+| **Capcodes** | `string` | ❌ | - | Comma-separated capcodes, e.g. `1420059, 1400121` |
+| **Regios** | `list` | ❌ | - | One or more Veiligheidsregio numbers (see [Regios NL](#regios-nl) below) |
+| **Diensten** | `list` | ❌ | - | One or more service types (see [Diensten](#diensten) below) |
+| **Melding** | `string` | ❌ | - | Keywords that must ALL appear in the alert, e.g. `MAASSL, reanimatie` |
+| **GRIP** | `select` | ❌ | - | Minimum GRIP level (1-5); only alerts at or above this level are shown |
 | **Prio 1 only** | `bool` | ❌ | `false` | Only show priority 1 alerts |
 | **Life** | `bool` | ❌ | `false` | Only show Lifeliner / trauma helicopter alerts |
 | **Poll interval** | `number` | ❌ | `60` | How often to poll AlarmeringDroid, in seconds (30-3600) |
