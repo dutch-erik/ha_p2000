@@ -6,7 +6,7 @@
 
 A Home Assistant integration for live P2000 emergency alerts, powered by [AlarmeringDroid](https://beta.alarmeringdroid.nl/).
 
-P2000 is the Dutch paging network for emergency services. This integration lets you track alerts in your area and build automations around them — think push notifications when the fire brigade is dispatched to your street, or a TTS announcement when a Lifeliner is inbound.
+P2000 is the Dutch paging network for emergency services. This integration lets you track alerts in your area and build automations around them, think push notifications when the fire brigade is dispatched to your street, or a TTS announcement when a Lifeliner is inbound.
 
 ## Features
 
@@ -15,7 +15,7 @@ P2000 is the Dutch paging network for emergency services. This integration lets 
 - Multiple keywords supported with AND logic
 - Icon automatically set based on service type
 - Sensor state survives HA restarts
-- Fully UI-configurable — no YAML needed
+- Fully UI-configurable, no YAML needed
 
 ## Installation
 
@@ -36,7 +36,7 @@ P2000 is the Dutch paging network for emergency services. This integration lets 
 
 [![Start Config Flow](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=p2000_nl)
 
-Click **Add Integration to My** above, or go to **Settings → Integrations → Add integration → P2000**. Each sensor gets its own filter — you can add multiple sensors, e.g. one for all alerts in your municipality and one for Lifeliners only.
+Click **Add Integration to My** above, or go to **Settings → Integrations → Add integration → P2000**. Each sensor gets its own filter, you can add multiple sensors, e.g. one for all alerts in your municipality and one for Lifeliners only.
 
 To change a filter later, click **Configure** on the integration card. No restart needed.
 
@@ -57,7 +57,7 @@ To change a filter later, click **Configure** on the integration card. No restar
 
 > **Tip:** The `tekstmelding` attribute contains the human-readable alert text (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis"). Use this for keyword filtering rather than the raw radio code in `melding`.
 
-> ⚠️ At least one filter (Gemeenten, Capcodes, Regios, Diensten, Melding or GRIP) is recommended — without any filter the sensor shows alerts from the entire Netherlands. If you save with no filter set, the integration shows a confirmation warning before creating the sensor.
+> ⚠️ At least one filter (Gemeenten, Capcodes, Regios, Diensten, Melding or GRIP) is recommended, without any filter the sensor shows alerts from the entire Netherlands. If you save with no filter set, the integration shows a confirmation warning before creating the sensor.
 
 ## Regios NL
 
