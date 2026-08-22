@@ -1,4 +1,4 @@
-"""P2000 sensor (v2.2.3) — all bug fixes applied."""
+"""P2000 sensor entity."""
 
 import hashlib
 import json
@@ -16,15 +16,17 @@ from .const import (
     CONF_CAPCODES,
     CONF_DIENSTEN,
     CONF_GEMEENTEN,
+    CONF_GRIP,
     CONF_LIFE,
     CONF_MELDING,
     CONF_NAME,
     CONF_PRIO1,
     CONF_REGIOS,
+    CONF_SCAN_INTERVAL,
+    DEFAULT_SCAN_INTERVAL,
 )
 
 _LOGGER = logging.getLogger(__name__)
-SCAN_INTERVAL = timedelta(minutes=1)
 
 DIENST_ICON = {
     "1": "mdi:police-badge",
@@ -59,7 +61,11 @@ def detect_service_from_text(text: str | None) -> str | None:
 async def async_setup_entry(
     hass: Any, entry: Any, async_add_entities: Any
 ) -> None:
-    conf = entry.data
+    # FIX: entry.data holds the original config-flow data, but changes made
+    # via the options flow are stored separately on entry.options and were
+    # never merged in here. Without this merge, saved option changes had no
+    # effect on the sensor even after a reload.
+    conf = {**entry.data, **entry.options}
     name = conf.get(CONF_NAME)
 
     api_filter = {}
@@ -78,9 +84,21 @@ async def async_setup_entry(
         v = conf[CONF_MELDING]
         api_filter[CONF_MELDING] = v if isinstance(v, list) else [v]
 
+    # GRIP is a local-only filter (see api.py); only include if set.
+    if conf.get(CONF_GRIP):
+        api_filter[CONF_GRIP] = conf[CONF_GRIP]
+
+    scan_interval_seconds = conf.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    scan_interval = timedelta(seconds=scan_interval_seconds)
+
     api = P2000Api()
-    coordinator = P2000DataUpdateCoordinator(hass, api, api_filter, SCAN_INTERVAL)
+    coordinator = P2000DataUpdateCoordinator(hass, api, api_filter, scan_interval)
     await coordinator.async_refresh()
+
+    # Store the coordinator on the entry so diagnostics.py (and any future
+    # platform) can access the latest fetched data without a separate
+    # hass.data registry.
+    entry.runtime_data = coordinator
 
     async_add_entities(
         [P2000Sensor(hass, coordinator, name, api_filter, entry.entry_id)],
@@ -164,7 +182,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         (FIX #6).
         """
         data = self.coordinator.data
-        if isinstance(data, dict):
+        if data:
             self._cached_state = data.get("melding")
             self._last_updated = datetime.now(UTC).isoformat()
             self._attributes = dict(data)
@@ -185,7 +203,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         if self._forced_icon:
             return self._forced_icon
 
-        if not isinstance(data, dict):
+        if not data:
             return DEFAULT_ICON
 
         # 2) Direct dienstid from API response.
@@ -237,7 +255,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         data = self.coordinator.data
         out: dict = {}
 
-        if isinstance(data, dict):
+        if data:
             out.update(data)
         else:
             out.update(self._attributes)
@@ -245,18 +263,20 @@ class P2000Sensor(SensorEntity, RestoreEntity):
 
         # Helpers block: consistent dienstid source.
         dienstid_val = None
-        if isinstance(data, dict):
+        if data:
             dienstid_val = data.get("dienstid")
         if dienstid_val is None:
             dienstid_val = self._dienstid_fallback
 
+        resolved_icon = self._resolve_icon()
+
         out["helpers"] = {
             "dienst_id_normalized": dienstid_val,
-            "icon_used": self._resolve_icon(),
+            "icon_used": resolved_icon,
         }
 
         out["filter"] = self._api_filter
-        out["icon"] = self._resolve_icon()
+        out["icon"] = resolved_icon
         out["last_updated"] = self._last_updated
 
         return out
