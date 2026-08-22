@@ -66,7 +66,7 @@ async def async_setup_entry(
     # never merged in here. Without this merge, saved option changes had no
     # effect on the sensor even after a reload.
     conf = {**entry.data, **entry.options}
-    name = conf.get(CONF_NAME)
+    name = str(conf.get(CONF_NAME, ""))
 
     api_filter = {}
     for f in (CONF_GEMEENTEN, CONF_CAPCODES, CONF_DIENSTEN, CONF_REGIOS):
