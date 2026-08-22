@@ -1,1 +1,45 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "P2000 sensor",
+        "description": "Configure the filters for this sensor. At least one filter is recommended.",
+        "data": {
+          "name": "Name",
+          "gemeenten": "Gemeenten",
+          "capcodes": "Capcodes",
+          "regios": "Regios",
+          "diensten": "Diensten",
+          "melding": "Melding keywords",
+          "grip_min": "Minimum GRIP level",
+          "prio1": "Priority 1 only",
+          "life": "Lifeliner only",
+          "scan_interval": "Poll interval (seconds)"
+        }
+      },
+      "confirm_no_filter": {
+        "title": "No filter set",
+        "description": "You haven't set any filter (Gemeenten, Capcodes, Regios, Diensten, Melding or GRIP). This sensor will show alerts from the entire Netherlands, which can be a lot of traffic. Click Submit to continue anyway, or go back to add a filter."
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "options": {
+        "title": "P2000 options",
+        "data": {
+          "gemeenten": "Gemeenten",
+          "capcodes": "Capcodes",
+          "regios": "Regios",
+          "diensten": "Diensten",
+          "melding": "Melding keywords",
+          "grip_min": "Minimum GRIP level",
+          "prio1": "Priority 1 only",
+          "life": "Lifeliner only",
+          "scan_interval": "Poll interval (seconds)"
+        }
+      }
+    }
+  }
+}
 
