@@ -1,4 +1,4 @@
-"""Coordinator for P2000 integration (v2.2.1)."""
+"""Coordinator for P2000 integration"""
 
 import logging
 import time
