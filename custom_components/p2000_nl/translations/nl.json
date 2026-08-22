@@ -1,0 +1,44 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "P2000 sensor",
+        "description": "Stel de filters voor deze sensor in. Minimaal één filter wordt aanbevolen.",
+        "data": {
+          "name": "Naam",
+          "gemeenten": "Gemeenten",
+          "capcodes": "Capcodes",
+          "regios": "Regio's",
+          "diensten": "Diensten",
+          "melding": "Zoekwoorden melding",
+          "grip_min": "Minimaal GRIP-niveau",
+          "prio1": "Alleen prio 1",
+          "life": "Alleen Lifeliner",
+          "scan_interval": "Poll-interval (seconden)"
+        }
+      },
+      "confirm_no_filter": {
+        "title": "Geen filter ingesteld",
+        "description": "Je hebt geen enkel filter ingesteld (Gemeenten, Capcodes, Regio's, Diensten, Melding of GRIP). Deze sensor toont dan meldingen uit heel Nederland, wat veel verkeer kan opleveren. Klik op Verzenden om toch door te gaan, of ga terug om een filter toe te voegen."
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "options": {
+        "title": "P2000 opties",
+        "data": {
+          "gemeenten": "Gemeenten",
+          "capcodes": "Capcodes",
+          "regios": "Regio's",
+          "diensten": "Diensten",
+          "melding": "Zoekwoorden melding",
+          "grip_min": "Minimaal GRIP-niveau",
+          "prio1": "Alleen prio 1",
+          "life": "Alleen Lifeliner",
+          "scan_interval": "Poll-interval (seconden)"
+        }
+      }
+    }
+  }
+}
