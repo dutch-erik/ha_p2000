@@ -6,14 +6,14 @@
 
 A Home Assistant integration for live P2000 emergency alerts, powered by [AlarmeringDroid](https://beta.alarmeringdroid.nl/).
 
-P2000 is the Dutch paging network for emergency services. This integration lets you track alerts in your area and build automations around them, think push notifications when the fire brigade is dispatched to your street, or a TTS announcement when a Lifeliner is inbound.
+P2000 is the Dutch paging network for emergency services. Track alerts near you and hook them into automations. A push notification when the fire brigade rolls out near your street, or a TTS announcement when a Lifeliner is inbound.
 
 ## Features
 
 - Live P2000 alerts as HA sensors, poll interval configurable (default 60s)
 - Filter by region, municipality, capcode, service type, or keyword
 - Multiple keywords supported with AND logic
-- Icon automatically set based on service type
+- Icon set automatically based on service type
 - Sensor state survives HA restarts
 - Fully UI-configurable, no YAML needed
 
@@ -36,7 +36,7 @@ P2000 is the Dutch paging network for emergency services. This integration lets 
 
 [![Start Config Flow](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=p2000_nl)
 
-Click **Add Integration to My** above, or go to **Settings → Integrations → Add integration → P2000**. Each sensor gets its own filter, you can add multiple sensors, e.g. one for all alerts in your municipality and one for Lifeliners only.
+Click **Add Integration to My** above, or go to **Settings → Integrations → Add integration → P2000**. Each sensor gets its own filter, so add as many as you want: one for all alerts in your municipality, another for Lifeliners only.
 
 To change a filter later, click **Configure** on the integration card. No restart needed.
 
@@ -44,20 +44,20 @@ To change a filter later, click **Configure** on the integration card. No restar
 
 | Option | Type | Required | Default | Description |
 |---|---|---|---|---|
-| **Name** | `string` | ✅ | — | Unique name for this sensor |
-| **Gemeenten** | `string` | ❌ | — | Comma-separated municipality names, lowercase — e.g. `maassluis, vlaardingen` |
-| **Capcodes** | `string` | ❌ | — | Comma-separated capcodes — e.g. `1420059, 1400121` |
-| **Regios** | `list` | ❌ | — | One or more Veiligheidsregio numbers (see [Regios NL](#regios-nl) below) |
-| **Diensten** | `list` | ❌ | — | One or more service types (see [Diensten](#diensten) below) |
-| **Melding** | `string` | ❌ | — | Keywords that must ALL appear in the alert — e.g. `MAASSL, reanimatie` |
-| **GRIP** | `select` | ❌ | — | Minimum GRIP level (1–5); only alerts at or above this level are shown |
+| **Name** | `string` | ✅ | n/a | Unique name for this sensor |
+| **Gemeenten** | `string` | ❌ | n/a | Comma-separated municipality names, lowercase, e.g. `maassluis, vlaardingen` |
+| **Capcodes** | `string` | ❌ | n/a | Comma-separated capcodes, e.g. `1420059, 1400121` |
+| **Regios** | `list` | ❌ | n/a | One or more Veiligheidsregio numbers (see [Regios NL](#regios-nl) below) |
+| **Diensten** | `list` | ❌ | n/a | One or more service types (see [Diensten](#diensten) below) |
+| **Melding** | `string` | ❌ | n/a | Keywords that must ALL appear in the alert, e.g. `MAASSL, reanimatie` |
+| **GRIP** | `select` | ❌ | n/a | Minimum GRIP level (1-5); only alerts at or above this level are shown |
 | **Prio 1 only** | `bool` | ❌ | `false` | Only show priority 1 alerts |
 | **Life** | `bool` | ❌ | `false` | Only show Lifeliner / trauma helicopter alerts |
-| **Poll interval** | `number` | ❌ | `60` | How often to poll AlarmeringDroid, in seconds (30–3600) |
+| **Poll interval** | `number` | ❌ | `60` | How often to poll AlarmeringDroid, in seconds (30-3600) |
 
-> **Tip:** The `tekstmelding` attribute contains the human-readable alert text (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis"). Use this for keyword filtering rather than the raw radio code in `melding`.
+> **Tip:** The `tekstmelding` attribute has the human-readable alert text (e.g. "Ambulance met spoed naar Hoogstraat, Maassluis"). Use that for keyword filtering, not the raw radio code in `melding`.
 
-> ⚠️ At least one filter (Gemeenten, Capcodes, Regios, Diensten, Melding or GRIP) is recommended, without any filter the sensor shows alerts from the entire Netherlands. If you save with no filter set, the integration shows a confirmation warning before creating the sensor.
+> ⚠️ Set at least one filter (Gemeenten, Capcodes, Regios, Diensten, Melding or GRIP). Without one, the sensor pulls alerts from the entire Netherlands. If you try to save without a filter, you'll get a warning first.
 
 ## Regios NL
 
@@ -180,6 +180,8 @@ action:
 
 ## Example dashboard card
 
+The example below is a plain `markdown` card. Fair warning: HA's markdown rendering isn't always consistent, font size and indentation can shift depending on content. For something that looks the same every time, with state, dispatched units, and a timeline of related alerts, try [HACS `custom:button-card`](https://github.com/custom-cards/button-card) instead. It renders fixed HTML/CSS.
+
 ```yaml
 type: markdown
 title: "{{ state_attr('sensor.p2000_mijn_sensor', 'dienst') | default('P2000') }}"
@@ -194,7 +196,7 @@ content: >
 
 ## Data source
 
-Alert data comes from the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/), polled every minute.
+Alert data comes from the [AlarmeringDroid API](https://beta.alarmeringdroid.nl/), polled at your configured poll interval (default 60 seconds).
 
 ## Contributing
 
@@ -209,4 +211,4 @@ mypy custom_components/p2000_nl/
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
