@@ -11,8 +11,24 @@ CONF_REGIOS = "regios"
 CONF_PRIO1 = "prio1"
 CONF_LIFE = "life"
 CONF_MELDING = "melding"
+CONF_GRIP = "grip_min"
+CONF_SCAN_INTERVAL = "scan_interval"
+
+# Default poll interval in seconds, and the min/max a user may configure.
+# The lower bound protects the free AlarmeringDroid API from being hammered.
+DEFAULT_SCAN_INTERVAL = 60
+MIN_SCAN_INTERVAL = 30
+MAX_SCAN_INTERVAL = 3600
 
 # Options lists (used in flows)
+GRIP_OPTIES = [
+    {"value": "1", "label": "GRIP 1"},
+    {"value": "2", "label": "GRIP 2"},
+    {"value": "3", "label": "GRIP 3"},
+    {"value": "4", "label": "GRIP 4"},
+    {"value": "5", "label": "GRIP 5"},
+]
+
 REGIO_OPTIES = [
     {"value": "1", "label": "Amsterdam-Amstelland"},
     {"value": "2", "label": "Groningen"},
