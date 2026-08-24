@@ -32,7 +32,7 @@ jobs:
       - name: Run ruff (check no unfixable errors remain)
         run: ruff check custom_components/p2000_nl/
 
-      - name: Run ruff (formatter — auto-fix)
+      - name: Run ruff (formatter, auto-fix)
         run: ruff format custom_components/p2000_nl/
 
       - name: Run mypy (type checker)
