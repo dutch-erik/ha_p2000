@@ -14,8 +14,8 @@ select = [
     "SIM",  # flake8-simplify
 ]
 ignore = [
-    "E501",  # line too long — ruff format handles this
-    "SIM108", # ternary operator — sometimes less readable
+    "E501",  # line too long, ruff format handles this
+    "SIM108", # ternary operator, sometimes less readable
 ]
 
 [tool.ruff.lint.isort]
