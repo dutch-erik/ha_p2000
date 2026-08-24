@@ -13,7 +13,7 @@ _LOGGER = logging.getLogger(__name__)
 # urllib3 logs its own raw retry attempts (connection/read timeouts) at
 # WARNING level, including the full request URL. Those messages are cryptic
 # and duplicate what P2000Api already reports through _LOGGER, and they fire
-# once per sensor per failed poll — with several sensors configured this
+# once per sensor per failed poll: with several sensors configured this
 # floods the HA log with near-identical noise. We handle and report
 # connectivity issues ourselves (see _request below), so silence urllib3's
 # own chatter and only let real errors through.
@@ -36,8 +36,8 @@ class P2000Api:
         )
         self.session.mount("https://", HTTPAdapter(max_retries=retries))
         # Tracks whether the previous poll failed, so we only log a WARNING
-        # on the first failure of a streak and an INFO once it recovers —
-        # instead of repeating the same warning on every single poll.
+        # on the first failure of a streak, then stay quiet (debug-level)
+        # for repeats, instead of repeating the same warning every poll.
         self._last_poll_failed = False
 
     def _log_failure(self, message: str, *args: Any) -> None:
@@ -163,7 +163,7 @@ class P2000Api:
         # If a diensten filter is set and the main melding's dienstid does not
         # match, check subitems for a match and promote that subitem as the
         # result. The promoted item's "subitems" becomes the original main
-        # melding plus all *other* subitems — it must not include itself.
+        # melding plus all *other* subitems; it must not include itself.
         result: dict[str, Any] = meldingen[0]
 
         if diensten_filter:
