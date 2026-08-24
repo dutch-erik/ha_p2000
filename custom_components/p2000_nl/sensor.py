@@ -61,10 +61,8 @@ def detect_service_from_text(text: str | None) -> str | None:
 async def async_setup_entry(
     hass: Any, entry: Any, async_add_entities: Any
 ) -> None:
-    # FIX: entry.data holds the original config-flow data, but changes made
-    # via the options flow are stored separately on entry.options and were
-    # never merged in here. Without this merge, saved option changes had no
-    # effect on the sensor even after a reload.
+    # Options flow changes are stored separately on entry.options and must
+    # be merged with entry.data here so saved changes actually take effect.
     conf = {**entry.data, **entry.options}
     name = str(conf.get(CONF_NAME, ""))
 
@@ -78,8 +76,8 @@ async def async_setup_entry(
     if conf.get(CONF_LIFE):
         api_filter[CONF_LIFE] = "1"
 
-    # FIX (#4): CONF_MELDING is now always stored as a list of keywords.
-    # Pass the full list to the API so all keywords are filtered (AND logic).
+    # CONF_MELDING is stored as a list of keywords; pass the full list so
+    # api.py can apply AND-logic filtering (all keywords must match).
     if conf.get(CONF_MELDING):
         v = conf[CONF_MELDING]
         api_filter[CONF_MELDING] = v if isinstance(v, list) else [v]
@@ -122,8 +120,8 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         self._name = name
         self._api_filter = api_filter
 
-        # Cached values — only written from _handle_coordinator_update, never
-        # from property accessors (FIX #6: no side effects in properties).
+        # Cached values, only written from _handle_coordinator_update.
+        # Property accessors below are pure reads with no side effects.
         self._cached_state: str | None = None
         self._last_updated: str | None = None
         self._attributes: dict = {}
@@ -178,8 +176,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
     def _handle_coordinator_update(self) -> None:
         """Called by the coordinator whenever new data arrives.
 
-        All mutable state is updated here — never inside property accessors
-        (FIX #6).
+        All mutable state is updated here, never inside property accessors.
         """
         data = self.coordinator.data
         if data:
@@ -192,7 +189,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         self.async_write_ha_state()
 
     # ------------------------------------------------------------------
-    # Icon resolution (FIX #3): consistent isinstance guard throughout.
+    # Icon resolution
     # ------------------------------------------------------------------
 
     def _resolve_icon(self) -> str:
@@ -243,7 +240,7 @@ class P2000Sensor(SensorEntity, RestoreEntity):
         return self._resolve_icon()
 
     # ------------------------------------------------------------------
-    # State and attributes — pure reads, no side effects (FIX #6).
+    # State and attributes: pure reads, no side effects.
     # ------------------------------------------------------------------
 
     @property
