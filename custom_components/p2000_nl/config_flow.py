@@ -38,7 +38,7 @@ from .const import (
 )
 from .util import normalize_filter, stable_hash
 
-# Config keys that count as a "filter" — at least one should be set,
+# Config keys that count as a "filter". At least one should be set,
 # otherwise the sensor pulls alerts from the entire Netherlands.
 _FILTER_KEYS = (
     CONF_GEMEENTEN,
@@ -62,13 +62,9 @@ GRIP_OPTIONS: list[SelectOptionDict] = [
 
 
 # ----------------------------------------------------------------------
-# Shared field selectors.
-#
-# These are used by BOTH config_flow.py (create) and options_flow.py
-# (edit) so the two forms can never drift out of sync — a field added
-# here automatically shows up in both places. This is the fix for a
-# real bug where options_flow.py was missing the scan_interval field
-# because it had its own separate, hand-copied selector definition.
+# Shared field selectors, used by both config_flow.py (create) and
+# options_flow.py (edit) so the two forms always stay in sync: a field
+# added here automatically shows up in both places.
 # ----------------------------------------------------------------------
 
 
@@ -178,8 +174,7 @@ class P2000ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(unique_id)
         self._abort_if_unique_id_configured()
 
-        entry_data = {**data, "unique_id": unique_id}
-        return self.async_create_entry(title=data[CONF_NAME], data=entry_data)
+        return self.async_create_entry(title=data[CONF_NAME], data=data)
 
     @staticmethod
     @callback
